@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useUserStore } from '../stores/user';
+import { config } from '../config/env';
 
 interface AdData {
   id: string;
@@ -72,7 +73,7 @@ export const useAdvertising = () => {
       }
 
       // Получаем информацию о пользователе для передачи userId
-      const userResponse = await fetch('https://spectrmod.ru/api/me', {
+      const userResponse = await fetch(`${config.API_URL}/me`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -83,7 +84,7 @@ export const useAdvertising = () => {
       const userData = await userResponse.json();
       const userId = userData.user?.id;
 
-      const response = await fetch(`https://spectrmod.ru/api/advertising/serve?userId=${userId}`, {
+      const response = await fetch(`${config.API_URL}/advertising/serve?userId=${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -150,7 +151,7 @@ export const useAdvertising = () => {
       const userData = await userResponse.json();
       const userId = userData.user?.id;
 
-      await fetch('https://spectrmod.ru/api/advertising/track/impression', {
+      await fetch(`${config.API_URL}/advertising/track/impression`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -177,7 +178,7 @@ export const useAdvertising = () => {
       }
 
       // Получаем userId
-      const userResponse = await fetch('https://spectrmod.ru/api/me', {
+      const userResponse = await fetch(`${config.API_URL}/me`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
@@ -189,7 +190,7 @@ export const useAdvertising = () => {
       const userData = await userResponse.json();
       const userId = userData.user?.id;
 
-      await fetch('https://spectrmod.ru/api/advertising/track/click', {
+      await fetch(`${config.API_URL}/advertising/track/click`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

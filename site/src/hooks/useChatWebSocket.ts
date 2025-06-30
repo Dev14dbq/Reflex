@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { WSMessage, ChatEvent } from '../pages/Chat/types';
+import { config } from '../config/env';
 
 interface UseChatWebSocketProps {
   token: string | null;
@@ -128,7 +129,7 @@ export const useChatWebSocket = ({ token, onEvent }: UseChatWebSocketProps) => {
     clearReconnectTimeout();
 
     try {
-      const ws = new WebSocket(`wss://spectrmod.ru/ws/chat?token=${token}`);
+      const ws = new WebSocket(`${config.WS_URL}/chat?token=${token}`);
       wsRef.current = ws;
 
       ws.onopen = () => {

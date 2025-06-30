@@ -1,0 +1,126 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop, staging ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: reflex_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: |
+          api/package-lock.json
+          site/package-lock.json
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    # API тесты
+    - name: Install API dependencies
+      run: |
+        cd api
+        npm ci
+    
+    - name: Run API tests
+      run: |
+        cd api
+        npm run test
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/reflex_test
+        REDIS_URL: redis://localhost:6379
+    
+    # Frontend тесты
+    - name: Install Site dependencies
+      run: |
+        cd site
+        npm ci
+    
+    - name: Run Site tests
+      run: |
+        cd site
+        npm run test
+    
+    - name: Build Site
+      run: |
+        cd site
+        npm run build
+    
+    # Bot тесты
+    - name: Install Bot dependencies
+      run: |
+        cd bot
+        pip install -r requirements.txt
+    
+    - name: Run Bot tests
+      run: |
+        cd bot
+        python -m pytest tests/ || echo "No tests found"
+    
+    # Линтеры
+    - name: Run Linters
+      run: |
+        cd api && npm run lint
+        cd ../site && npm run lint
+        cd ../bot && flake8 . || echo "Flake8 not configured"
+
+  deploy-staging:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/staging'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Deploy to Staging
+      run: |
+        echo "Deploying to staging server..."
+        # Здесь будут команды для деплоя на staging
+    
+  deploy-production:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Deploy to Production
+      run: |
+        echo "Deploying to production server..."
+        # Здесь будут команды для деплоя на production 

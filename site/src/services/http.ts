@@ -1,8 +1,9 @@
 import axios, { AxiosError } from "axios";
+import { config } from "../config/env";
 
 // Базовый экземпляр
 const http = axios.create({
-  baseURL: "https://spectrmod.ru/api",
+  baseURL: config.API_URL,
   timeout: 7000,
 });
 

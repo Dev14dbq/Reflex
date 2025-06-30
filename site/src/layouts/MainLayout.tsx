@@ -6,6 +6,8 @@ import { ErrorCard, AdCard, BannedScreen } from "../components/ui";
 import { useUserStore } from "../stores/user";
 import { useGlobalWebSocket } from "../hooks/useGlobalWebSocket";
 import { useAdvertising } from "../hooks/useAdvertising";
+import { apiService } from "../services/api";
+import { config } from "../config/env";
 
 import { CityMigration } from "../pages/CityMigration/CityMigration";
 
@@ -78,7 +80,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       }
 
       try {
-        const response = await fetch("https://spectrmod.ru/api/me", {
+        const response = await apiService.get("/me", {
           headers: { Authorization: `Bearer ${storedToken}` },
         });
 
@@ -88,7 +90,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           setToken(storedToken);
           
           // Проверяем есть ли профиль
-          const profileResponse = await fetch("https://spectrmod.ru/api/profile/me", {
+          const profileResponse = await apiService.get("/profile/me", {
             headers: { Authorization: `Bearer ${storedToken}` },
           });
           
@@ -169,7 +171,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const verifyProfile = async (token: string, retry = false) => {
     try {
       console.log('[VerifyProfile] 🔍 Проверяем профиль...', { retry });
-      const res = await axios.get("https://spectrmod.ru/api/profile/me", {
+      const res = await axios.get(`${config.API_URL}/profile/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -252,7 +254,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
     try {
       console.log('[Auth] 🚀 Отправляем запрос авторизации...');
-      const response = await axios.post("https://spectrmod.ru/api/auth/by-initdata", 
+      const response = await axios.post(`${config.API_URL}/auth/by-initdata`, 
         { initData: raw },
         { timeout: 10000 } // 10 секунд таймаут
       );
@@ -316,7 +318,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <ErrorCard
           title="Telegram не прислал данные"
           description="Откройте приложение снова через кнопку «Открыть» в Telegram"
-          onRetry={() => window.location.href = "https://t.me/spectrmod_bot?startapp"}
+          onRetry={() => window.location.href = config.BOT_URL}
           retryText="Запустить"
         />
       );

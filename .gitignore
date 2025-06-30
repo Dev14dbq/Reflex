@@ -1,0 +1,149 @@
+# Dependencies
+node_modules/
+venv/
+env/
+.venv/
+.env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Environment variables & secrets
+.env
+.env.example
+.env.local
+.env.development
+.env.test
+.env.production
+.env.*.local
+*.secret
+*.credentials
+*_token
+*_key
+.secrets/
+secrets/
+
+# Git credentials (КРИТИЧЕСКИ ВАЖНО!)
+.git-credentials
+.gitconfig.local
+
+# API Keys & Tokens (паттерны)
+*api_key*
+*secret_key*
+*private_key*
+*access_token*
+*refresh_token*
+*bearer_token*
+
+# Build outputs
+dist/
+build/
+generated/
+out/
+coverage/
+
+# Database files
+*.sql
+*.db
+*.sqlite
+*.sqlite3
+dump.rdb
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# IDE & Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+.classpath
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Cache directories
+.cache/
+.npm/
+.yarn/
+.next/
+.nuxt/
+.vercel/
+
+# PM2
+.pm2/
+ecosystem.config.js
+
+# SSL certificates & keys
+*.pem
+*.key
+*.crt
+*.cert
+*.p12
+*.pfx
+
+# Docker (если используете)
+.dockerignore
+docker-compose.override.yml
+
+# Backup files
+*.bak
+*.backup
+*.tmp
+*~
+
+# Test coverage
+coverage/
+.nyc_output/
+.coverage
+htmlcov/
+
+# Python specific
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.tox/
+
+# Node.js specific
+.eslintcache
+.stylelintcache
+
+# macOS
+.AppleDouble
+.LSOverride
+
+# Windows
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# Linux
+*~
+
+# Temporary files
+*.tmp
+*.temp 

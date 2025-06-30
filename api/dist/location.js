@@ -6,7 +6,7 @@ const auth_1 = require("./middleware/auth");
 const locationRouter = (0, express_1.Router)();
 exports.locationRouter = locationRouter;
 // Geoapify API key - добавьте свой ключ
-const GEOAPIFY_API_KEY = "c1c5e6ac7c5c4b4fa2e42dac5e6b8f93"; // Замените на свой ключ
+const GEOAPIFY_API_KEY = "b9d6b522024346b7abe4c5c77b2a805b"; // Замените на свой ключ
 // Поиск городов через Geoapify Geocoding API
 locationRouter.post("/location/suggest-cities", auth_1.authMiddleware, async (req, res) => {
     try {

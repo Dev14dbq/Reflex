@@ -16,7 +16,7 @@ window.fetch = function(...args) {
   const [url, options] = args;
   
   // Проверяем только запросы к нашему API
-  if (typeof url === 'string' && url.includes('spectrmod.ru/api')) {
+  if (typeof url === 'string' && (url.includes('spectrmod.ru/api') || url.includes('localhost:3001/api'))) {
     console.log('🚀 [FETCH DEBUG] Запрос к API:', {
       url,
       method: options?.method || 'GET',

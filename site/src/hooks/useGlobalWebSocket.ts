@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { WSMessage, ChatEvent } from '../pages/Chat/types';
 import { useUserStore } from '../stores/user';
+import { config } from '../config/env';
 
 interface PendingRequest {
   resolve: (value: any) => void;
@@ -143,7 +144,7 @@ const connectWebSocket = (token: string) => {
   notifyStateChange();
 
   try {
-    const ws = new WebSocket(`wss://spectrmod.ru/ws/chat?token=${token}`);
+    const ws = new WebSocket(`${config.WS_URL}/chat?token=${token}`);
     wsRef = ws;
 
     ws.onopen = () => {

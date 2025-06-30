@@ -1,0 +1,700 @@
+.adminPage {
+  min-height: 100vh;
+  overflow-y: auto;
+  position: relative;
+  background: var(--neu-background);
+
+  .header {
+    position: sticky;
+    top: 0;
+    background: var(--neu-background);
+    border-bottom: 1px solid var(--neu-border);
+    z-index: 10;
+
+    .headerContent {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+
+      .backButton {
+        background: var(--neu-surface);
+        box-shadow: var(--neu-shadow-outset);
+        padding: 0.5rem;
+        border-radius: var(--neu-radius-md);
+        margin-right: 0.75rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        color: var(--neu-text-primary);
+        
+        &:hover {
+          box-shadow: var(--neu-shadow-hover);
+          transform: translateY(-2px);
+        }
+        
+        &:active {
+          box-shadow: var(--neu-shadow-pressed);
+          transform: translateY(1px);
+        }
+      }
+
+      h1 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--neu-text-primary);
+        margin: 0;
+      }
+    }
+  }
+
+  .content {
+    padding: 1rem;
+  }
+
+  .statsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .statCard {
+      background: var(--neu-surface);
+      border-radius: var(--neu-radius-lg);
+      padding: 1rem;
+      box-shadow: var(--neu-shadow-outset);
+      text-align: center;
+
+      h3 {
+        font-size: 0.875rem;
+        color: var(--neu-text-secondary);
+        margin-bottom: 0.5rem;
+      }
+
+      p {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--neu-text-primary);
+      }
+    }
+  }
+
+  .menuGrid {
+    display: grid;
+    gap: 1rem;
+
+    .menuCard {
+      display: flex;
+      align-items: center;
+      background: var(--neu-surface);
+      border-radius: var(--neu-radius-lg);
+      padding: 1rem;
+      width: 100%;
+      text-align: left;
+      border: none;
+      box-shadow: var(--neu-shadow-outset);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+
+      &:hover {
+        box-shadow: var(--neu-shadow-hover);
+        transform: translateY(-2px);
+      }
+
+      &:active {
+        box-shadow: var(--neu-shadow-pressed);
+        transform: translateY(1px);
+      }
+
+      .menuIcon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        border-radius: var(--neu-radius-md);
+        background: var(--neu-background);
+        margin-right: 1rem;
+        color: var(--neu-primary);
+      }
+
+      .menuContent {
+        flex: 1;
+
+        h3 {
+          font-size: 1rem;
+          font-weight: 600;
+          margin-bottom: 0.25rem;
+          color: var(--neu-text-primary);
+        }
+
+        p {
+          font-size: 0.875rem;
+          color: var(--neu-text-secondary);
+        }
+      }
+    }
+  }
+
+  // Стили для списка пользователей
+  .userList {
+    display: grid;
+    gap: 1rem;
+
+    .userCard {
+      background: var(--neu-surface);
+      border-radius: var(--neu-radius-lg);
+      padding: 1rem;
+      box-shadow: var(--neu-shadow-outset);
+
+      .userInfo {
+        h3 {
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--neu-text-primary);
+          margin-bottom: 0.25rem;
+        }
+
+        p {
+          color: var(--neu-text-secondary);
+          font-size: 0.875rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .userMeta {
+          display: flex;
+          gap: 1rem;
+          font-size: 0.75rem;
+          color: var(--neu-text-secondary);
+        }
+      }
+
+      .userActions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+
+        .actionButton {
+          padding: 0.5rem;
+          border: none;
+          border-radius: var(--neu-radius-md);
+          background: var(--neu-background);
+          color: var(--neu-primary);
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background: var(--neu-surface-hover);
+          }
+
+          &:active {
+            transform: scale(0.95);
+          }
+        }
+      }
+    }
+  }
+
+  // Стили для списка новостей
+  .newsList {
+    display: grid;
+    gap: 1rem;
+
+    .newsCard {
+      background: var(--neu-surface);
+      border-radius: var(--neu-radius-lg);
+      padding: 1rem;
+      box-shadow: var(--neu-shadow-outset);
+
+      .newsContent {
+        h3 {
+          font-size: 1.125rem;
+          font-weight: 600;
+          color: var(--neu-text-primary);
+          margin-bottom: 0.5rem;
+        }
+
+        p {
+          color: var(--neu-text-primary);
+          font-size: 0.875rem;
+          margin-bottom: 1rem;
+          line-height: 1.5;
+        }
+
+        .newsMeta {
+          display: flex;
+          gap: 1rem;
+          font-size: 0.75rem;
+          color: var(--neu-text-secondary);
+        }
+      }
+
+      .newsActions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+
+        .actionButton {
+          padding: 0.5rem 1rem;
+          border: none;
+          border-radius: var(--neu-radius-md);
+          background: var(--neu-background);
+          color: var(--neu-primary);
+          cursor: pointer;
+          font-size: 0.875rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background: var(--neu-surface-hover);
+          }
+
+          &:active {
+            transform: scale(0.95);
+          }
+        }
+      }
+    }
+  }
+
+  // Стили для форм редактирования
+  .editForm {
+    background: var(--neu-surface);
+    border-radius: var(--neu-radius-lg);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--neu-shadow-outset);
+
+    .input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--neu-border);
+      border-radius: var(--neu-radius-md);
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+      background: var(--neu-background);
+      color: var(--neu-text-primary);
+
+      &:focus {
+        outline: none;
+        border-color: var(--neu-primary);
+        box-shadow: 0 0 0 2px var(--neu-primary-alpha);
+      }
+    }
+
+    .textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--neu-border);
+      border-radius: var(--neu-radius-md);
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+      min-height: 8rem;
+      resize: vertical;
+      background: var(--neu-background);
+      color: var(--neu-text-primary);
+
+      &:focus {
+        outline: none;
+        border-color: var(--neu-primary);
+        box-shadow: 0 0 0 2px var(--neu-primary-alpha);
+      }
+    }
+
+    .formActions {
+      display: flex;
+      gap: 1rem;
+
+      button {
+        flex: 1;
+        padding: 0.75rem;
+        border: none;
+        border-radius: var(--neu-radius-md);
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &.saveButton {
+          background: var(--neu-primary);
+          color: white;
+
+          &:hover {
+            background: var(--neu-primary-hover);
+          }
+        }
+
+        &.cancelButton {
+          background: var(--neu-background);
+          color: var(--neu-text-primary);
+
+          &:hover {
+            background: var(--neu-surface-hover);
+          }
+        }
+
+        &:active {
+          transform: scale(0.98);
+        }
+      }
+    }
+  }
+
+  // Стили для списка жалоб
+  .reportList {
+    display: grid;
+    gap: 1rem;
+
+    .reportCard {
+      background: var(--neu-surface);
+      border-radius: var(--neu-radius-lg);
+      padding: 1rem;
+      box-shadow: var(--neu-shadow-outset);
+
+      .reportHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+
+        .reportType {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: var(--neu-primary);
+          font-weight: 500;
+          font-size: 0.875rem;
+        }
+
+        .reportStatus {
+          font-size: 0.75rem;
+          color: var(--neu-text-secondary);
+        }
+      }
+
+      .reportContent {
+        .reportUsers {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1rem;
+          margin-bottom: 1rem;
+
+          strong {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--neu-text-secondary);
+            margin-bottom: 0.25rem;
+          }
+
+          p {
+            font-weight: 500;
+            color: var(--neu-text-primary);
+            font-size: 0.875rem;
+          }
+        }
+
+        .reportReason {
+          margin-bottom: 1rem;
+
+          strong {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--neu-text-secondary);
+            margin-bottom: 0.25rem;
+          }
+
+          p {
+            color: var(--neu-text-primary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+          }
+        }
+
+        .reportMeta {
+          font-size: 0.75rem;
+          color: var(--neu-text-secondary);
+        }
+      }
+
+      .reportActions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+
+        .actionButton {
+          flex: 1;
+          padding: 0.5rem;
+          border: none;
+          border-radius: var(--neu-radius-md);
+          font-size: 0.875rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          &.approveButton {
+            background: var(--neu-success);
+            color: white;
+
+            &:hover {
+              background: var(--neu-success-hover);
+            }
+          }
+
+          &.rejectButton {
+            background: var(--neu-danger);
+            color: white;
+
+            &:hover {
+              background: var(--neu-danger-hover);
+            }
+          }
+
+          &:active {
+            transform: scale(0.95);
+          }
+        }
+      }
+    }
+  }
+
+  // Стили для фильтров
+  .filterButtons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .filterButton {
+      flex: 1;
+      padding: 0.75rem;
+      border: none;
+      border-radius: var(--neu-radius-md);
+      font-size: 0.875rem;
+      background: var(--neu-background);
+      color: var(--neu-text-primary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &.active {
+        background: var(--neu-primary);
+        color: white;
+      }
+
+      &:hover:not(.active) {
+        background: var(--neu-surface-hover);
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+  }
+
+  // Стили для аналитики
+  .analyticsSection {
+    background: var(--neu-surface);
+    border-radius: var(--neu-radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--neu-shadow-outset);
+
+    h2 {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: var(--neu-text-primary);
+    }
+
+    .chartSection {
+      margin-top: 1.5rem;
+
+      h3 {
+        font-size: 1rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+        color: var(--neu-text-primary);
+      }
+    }
+
+    .barChart {
+      .barChartItem {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+
+        .barLabel {
+          width: 7.5rem;
+          font-size: 0.875rem;
+          color: var(--neu-text-primary);
+        }
+
+        .barValue {
+          flex: 1;
+          height: 1.5rem;
+          background: var(--neu-primary);
+          border-radius: var(--neu-radius-sm);
+          color: white;
+          display: flex;
+          align-items: center;
+          padding: 0 0.5rem;
+          font-size: 0.75rem;
+          transition: width 0.3s ease;
+        }
+      }
+    }
+
+    .lineChart {
+      display: flex;
+      align-items: flex-end;
+      gap: 1rem;
+      height: 12.5rem;
+      padding-bottom: 1.5rem;
+
+      .lineChartPoint {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .pointValue {
+          background: var(--neu-primary);
+          color: white;
+          padding: 0.25rem 0.5rem;
+          border-radius: var(--neu-radius-sm);
+          font-size: 0.75rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .pointDate {
+          font-size: 0.75rem;
+          color: var(--neu-text-secondary);
+          transform: rotate(-45deg);
+          white-space: nowrap;
+        }
+      }
+    }
+
+    .pieChart {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+
+      .pieChartItem {
+        background: var(--neu-background);
+        border-radius: var(--neu-radius-md);
+        padding: 0.75rem;
+        text-align: center;
+
+        .pieLabel {
+          font-size: 0.875rem;
+          color: var(--neu-text-secondary);
+          margin-bottom: 0.25rem;
+        }
+
+        .pieValue {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: var(--neu-text-primary);
+        }
+      }
+    }
+  }
+
+  .timeRangeButtons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .timeButton {
+      flex: 1;
+      padding: 0.75rem;
+      border: none;
+      border-radius: var(--neu-radius-md);
+      font-size: 0.875rem;
+      background: var(--neu-background);
+      color: var(--neu-text-primary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &.active {
+        background: var(--neu-primary);
+        color: white;
+      }
+
+      &:hover:not(.active) {
+        background: var(--neu-surface-hover);
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+  }
+
+  .loading {
+    text-align: center;
+    padding: 2rem 0;
+    color: var(--neu-text-secondary);
+  }
+
+  .error {
+    text-align: center;
+    padding: 2rem 0;
+    color: var(--neu-danger);
+  }
+
+  .empty {
+    text-align: center;
+    padding: 2rem 0;
+    color: var(--neu-text-secondary);
+  }
+
+  .addButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--neu-primary);
+    color: white;
+    border: none;
+    border-radius: var(--neu-radius-md);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--neu-primary-hover);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  .loadMoreButton {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: var(--neu-radius-md);
+    background: var(--neu-background);
+    color: var(--neu-primary);
+    font-size: 0.875rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--neu-surface-hover);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+} 

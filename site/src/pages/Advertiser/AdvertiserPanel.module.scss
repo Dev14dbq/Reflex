@@ -1,0 +1,255 @@
+// Стили панели рекламодателя
+.advertiserPage {
+  min-height: 100vh;
+  overflow-y: auto;
+  position: relative;
+  background: var(--neu-background);
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    color: var(--neu-text-secondary);
+    font-size: 1rem;
+  }
+
+  .header {
+    position: sticky;
+    top: 0;
+    background: var(--neu-background);
+    border-bottom: 1px solid var(--neu-border);
+    z-index: 10;
+
+    .headerContent {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+
+      .backButton {
+        background: var(--neu-surface);
+        box-shadow: var(--neu-shadow-outset);
+        padding: 0.5rem;
+        border-radius: var(--neu-radius-md);
+        margin-right: 0.75rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        color: var(--neu-text-primary);
+        
+        &:hover {
+          box-shadow: var(--neu-shadow-hover);
+          transform: translateY(-2px);
+        }
+        
+        &:active {
+          box-shadow: var(--neu-shadow-pressed);
+          transform: translateY(1px);
+        }
+      }
+
+      h1 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--neu-text-primary);
+        margin: 0;
+      }
+    }
+  }
+
+  .content {
+    padding: 1rem;
+  }
+
+  .statsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .statCard {
+      background: var(--neu-surface);
+      border-radius: var(--neu-radius-lg);
+      padding: 1rem;
+      box-shadow: var(--neu-shadow-outset);
+      text-align: center;
+
+      h3 {
+        font-size: 0.875rem;
+        color: var(--neu-text-secondary);
+        margin-bottom: 0.5rem;
+      }
+
+      p {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--neu-text-primary);
+      }
+    }
+  }
+
+  .menuGrid {
+    display: grid;
+    gap: 1rem;
+
+    .menuCard {
+      display: flex;
+      align-items: center;
+      background: var(--neu-surface);
+      border-radius: var(--neu-radius-lg);
+      padding: 1rem;
+      width: 100%;
+      text-align: left;
+      border: none;
+      box-shadow: var(--neu-shadow-outset);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+
+      &:hover:not(:disabled) {
+        box-shadow: var(--neu-shadow-hover);
+        transform: translateY(-2px);
+      }
+
+      &:active:not(:disabled) {
+        box-shadow: var(--neu-shadow-pressed);
+        transform: translateY(1px);
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+      }
+
+      .menuIcon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        border-radius: var(--neu-radius-md);
+        background: var(--neu-background);
+        margin-right: 1rem;
+        color: var(--neu-primary);
+      }
+
+      .menuContent {
+        flex: 1;
+
+        h3 {
+          font-size: 1rem;
+          font-weight: 600;
+          margin-bottom: 0.25rem;
+          color: var(--neu-text-primary);
+        }
+
+        p {
+          font-size: 0.875rem;
+          color: var(--neu-text-secondary);
+        }
+      }
+    }
+  }
+}
+
+// Адаптивность
+@media (max-width: 768px) {
+  .advertiserPage {
+    .header {
+      padding: 0 16px;
+
+      .headerContent {
+        h1 {
+          font-size: 20px;
+        }
+      }
+    }
+
+    .content {
+      padding: 24px 16px;
+    }
+
+    .statsGrid {
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+
+      .statCard {
+        padding: 16px;
+
+        .statValue {
+          font-size: 24px;
+        }
+      }
+    }
+
+    .menuGrid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+
+      .menuCard {
+        padding: 20px;
+
+        .menuIcon {
+          width: 48px;
+          height: 48px;
+        }
+
+        .menuContent {
+          h3 {
+            font-size: 16px;
+          }
+
+          p {
+            font-size: 13px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .advertiserPage {
+    .statsGrid {
+      grid-template-columns: repeat(2, 1fr);
+
+      .statCard {
+        padding: 12px;
+
+        h3 {
+          font-size: 12px;
+        }
+
+        .statValue {
+          font-size: 20px;
+        }
+
+        p {
+          font-size: 12px;
+        }
+      }
+    }
+
+    .menuGrid {
+      .menuCard {
+        gap: 16px;
+        padding: 16px;
+
+        .menuIcon {
+          width: 40px;
+          height: 40px;
+        }
+
+        .menuContent {
+          h3 {
+            font-size: 15px;
+          }
+
+          p {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+} 

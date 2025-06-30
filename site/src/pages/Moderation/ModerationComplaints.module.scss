@@ -1,0 +1,393 @@
+.complaintsPage {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.header {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .backButton {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+  }
+}
+
+.content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.filterBar {
+  margin-bottom: 2rem;
+
+  .filters {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    .filterButton {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      font-weight: 500;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+
+      &.active {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+      }
+    }
+  }
+}
+
+.complaintsContainer {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 2rem;
+  min-height: 60vh;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.complaintsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 80vh;
+  overflow-y: auto;
+
+  .loading, .empty {
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.1rem;
+    opacity: 0.7;
+  }
+
+  .complaintCard {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-3px);
+    }
+
+    &.selected {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+    }
+
+    .complaintHeader {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+
+      .typeIcon {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+      }
+
+      .complaintMeta {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        .type {
+          background: rgba(255, 255, 255, 0.2);
+          padding: 0.25rem 0.75rem;
+          border-radius: 12px;
+          font-size: 0.8rem;
+          font-weight: 500;
+          text-transform: uppercase;
+        }
+
+        .priority {
+          font-size: 0.8rem;
+          font-weight: 600;
+          text-transform: uppercase;
+        }
+      }
+
+      .date {
+        font-size: 0.85rem;
+        opacity: 0.7;
+      }
+    }
+
+    .complaintContent {
+      .users {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
+
+        .user {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+          position: relative;
+
+          strong {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+          }
+
+          span {
+            font-size: 0.9rem;
+          }
+
+          .viewUserButton {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 0.25rem;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            opacity: 0.7;
+
+            &:hover {
+              background: rgba(255, 255, 255, 0.3);
+              opacity: 1;
+              transform: translateY(-1px);
+            }
+
+            &:active {
+              transform: translateY(1px);
+            }
+          }
+        }
+      }
+
+      .reason {
+        strong {
+          font-size: 0.8rem;
+          opacity: 0.8;
+          text-transform: uppercase;
+          display: block;
+          margin-bottom: 0.5rem;
+        }
+
+        p {
+          margin: 0;
+          font-size: 0.9rem;
+          line-height: 1.4;
+          background: rgba(255, 255, 255, 0.1);
+          padding: 0.75rem;
+          border-radius: 8px;
+        }
+      }
+    }
+  }
+}
+
+.actionPanel {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
+
+  h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  .selectedComplaintInfo {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+
+    h4 {
+      margin: 0 0 0.75rem 0;
+      font-size: 1rem;
+      color: #ffd700;
+    }
+
+    p {
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+      line-height: 1.4;
+
+      strong {
+        opacity: 0.8;
+        margin-right: 0.5rem;
+      }
+    }
+  }
+
+  .actionForm {
+    .noteTextarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 0.75rem;
+      color: white;
+      font-size: 0.9rem;
+      font-family: inherit;
+      resize: vertical;
+      margin-bottom: 1rem;
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      &:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.15);
+      }
+    }
+
+    .actionButtons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+
+      .actionButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+        }
+
+        &.approveButton {
+          background: #2ed573;
+          color: white;
+
+          &:hover {
+            background: #1dd65c;
+          }
+        }
+
+        &.rejectButton {
+          background: #ff4757;
+          color: white;
+
+          &:hover {
+            background: #ff3742;
+          }
+        }
+
+        &.warningButton {
+          background: #ffa502;
+          color: white;
+
+          &:hover {
+            background: #ff9500;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 1rem;
+
+    h1 {
+      font-size: 1.4rem;
+    }
+  }
+
+  .content {
+    padding: 1rem;
+  }
+
+  .filterBar .filters {
+    justify-content: center;
+  }
+
+  .complaintsContainer {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .complaintsList .complaintCard {
+    padding: 1rem;
+
+    .complaintContent .users {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  }
+
+  .actionPanel {
+    position: static;
+    margin-top: 1rem;
+  }
+} 

@@ -1,0 +1,415 @@
+// Стили для модерации рекламы
+.campaignsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+
+  .campaignCard {
+    background: var(--neu-surface);
+    border-radius: var(--neu-radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--neu-shadow-outset);
+    transition: all 0.2s ease;
+
+    &:hover {
+      box-shadow: var(--neu-shadow-hover);
+    }
+
+    .campaignHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+
+      .campaignInfo {
+        flex: 1;
+
+        h3 {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: var(--neu-text-primary);
+          margin-bottom: 0.5rem;
+        }
+
+        .campaignMeta {
+          display: flex;
+          gap: 1rem;
+          font-size: 0.875rem;
+          color: var(--neu-text-secondary);
+
+          .advertiser, .date {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+          }
+        }
+      }
+
+      .statusBadge {
+        padding: 0.5rem 1rem;
+        border-radius: var(--neu-radius-sm);
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+    }
+
+    .campaignContent {
+      margin-bottom: 1rem;
+
+      .adPreview {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+
+        .adImage {
+          width: 80px;
+          height: 80px;
+          border-radius: var(--neu-radius-md);
+          overflow: hidden;
+          flex-shrink: 0;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+
+        .adText {
+          flex: 1;
+
+          h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--neu-text-primary);
+            margin-bottom: 0.5rem;
+          }
+
+          p {
+            font-size: 0.875rem;
+            color: var(--neu-text-secondary);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+          }
+
+          .adButton {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            color: var(--neu-primary);
+            font-weight: 500;
+          }
+        }
+      }
+
+      .targeting {
+        h5 {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: var(--neu-text-primary);
+          margin-bottom: 0.5rem;
+        }
+
+        .targetingInfo {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+          font-size: 0.75rem;
+          color: var(--neu-text-secondary);
+
+          span {
+            background: var(--neu-background);
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--neu-radius-sm);
+          }
+        }
+      }
+    }
+
+    .moderationActions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: flex-end;
+
+      button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: var(--neu-radius-md);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+
+      .viewButton {
+        background: var(--neu-surface);
+        color: var(--neu-text-primary);
+        box-shadow: var(--neu-shadow-outset);
+
+        &:hover:not(:disabled) {
+          box-shadow: var(--neu-shadow-hover);
+        }
+      }
+
+      .approveButton {
+        background: #28a745;
+        color: white;
+
+        &:hover:not(:disabled) {
+          background: #218838;
+        }
+      }
+
+      .rejectButton {
+        background: #dc3545;
+        color: white;
+
+        &:hover:not(:disabled) {
+          background: #c82333;
+        }
+      }
+    }
+  }
+}
+
+// Модальное окно
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+
+  .modalContent {
+    background: var(--neu-surface);
+    border-radius: var(--neu-radius-lg);
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: var(--neu-shadow-outset);
+
+    .modalHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--neu-border);
+
+      h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--neu-text-primary);
+      }
+
+      .closeButton {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--neu-text-secondary);
+        padding: 0.25rem;
+        border-radius: 50%;
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          background: var(--neu-background);
+        }
+      }
+    }
+
+    .modalBody {
+      padding: 1.5rem;
+      overflow-y: auto;
+      max-height: 70vh;
+
+      .campaignDetails {
+        margin-bottom: 2rem;
+
+        h3 {
+          font-size: 1.125rem;
+          font-weight: 600;
+          color: var(--neu-text-primary);
+          margin-bottom: 1rem;
+        }
+
+        p {
+          margin-bottom: 0.5rem;
+          color: var(--neu-text-secondary);
+        }
+
+        .adFullPreview {
+          background: var(--neu-background);
+          border-radius: var(--neu-radius-md);
+          padding: 1rem;
+          margin: 1rem 0;
+
+          img {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            border-radius: var(--neu-radius-sm);
+            margin-bottom: 1rem;
+          }
+
+          h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--neu-text-primary);
+            margin-bottom: 0.5rem;
+          }
+
+          p {
+            color: var(--neu-text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.4;
+          }
+
+          a {
+            display: inline-block;
+            background: var(--neu-primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--neu-radius-sm);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+
+            &:hover {
+              background: var(--neu-accent-secondary);
+            }
+          }
+        }
+
+        .fullTargeting {
+          h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--neu-text-primary);
+            margin-bottom: 0.5rem;
+          }
+
+          ul {
+            list-style: none;
+            padding: 0;
+
+            li {
+              padding: 0.25rem 0;
+              color: var(--neu-text-secondary);
+              font-size: 0.875rem;
+            }
+          }
+        }
+      }
+
+      .moderationForm {
+        h4 {
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--neu-text-primary);
+          margin-bottom: 1rem;
+        }
+
+        .commentTextarea {
+          width: 100%;
+          min-height: 80px;
+          padding: 0.75rem;
+          border: 1px solid var(--neu-border);
+          border-radius: var(--neu-radius-md);
+          background: var(--neu-background);
+          color: var(--neu-text-primary);
+          font-family: inherit;
+          font-size: 0.875rem;
+          resize: vertical;
+          margin-bottom: 1rem;
+
+          &:focus {
+            outline: none;
+            border-color: var(--neu-primary);
+          }
+
+          &::placeholder {
+            color: var(--neu-text-muted);
+          }
+        }
+
+        .modalActions {
+          display: flex;
+          gap: 0.75rem;
+          justify-content: flex-end;
+
+          button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--neu-radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &:disabled {
+              opacity: 0.6;
+              cursor: not-allowed;
+            }
+          }
+
+          .approveButton {
+            background: #28a745;
+            color: white;
+
+            &:hover:not(:disabled) {
+              background: #218838;
+            }
+          }
+
+          .rejectButton {
+            background: #dc3545;
+            color: white;
+
+            &:hover:not(:disabled) {
+              background: #c82333;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.emptyState {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--neu-text-secondary);
+
+  p {
+    font-size: 1rem;
+  }
+} 

@@ -1,0 +1,378 @@
+// Стили для списка кампаний
+.campaignsPage {
+  min-height: 100vh;
+  overflow-y: auto;
+  position: relative;
+  background: var(--neu-background);
+
+  .header {
+    position: sticky;
+    top: 0;
+    background: var(--neu-background);
+    border-bottom: 1px solid var(--neu-border);
+    z-index: 10;
+
+    .headerContent {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+
+      .backButton {
+        background: var(--neu-surface);
+        box-shadow: var(--neu-shadow-outset);
+        padding: 0.5rem;
+        border-radius: var(--neu-radius-md);
+        margin-right: 0.75rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        color: var(--neu-text-primary);
+        
+        &:hover {
+          box-shadow: var(--neu-shadow-hover);
+          transform: translateY(-2px);
+        }
+        
+        &:active {
+          box-shadow: var(--neu-shadow-pressed);
+          transform: translateY(1px);
+        }
+      }
+
+      h1 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--neu-text-primary);
+        margin: 0;
+      }
+    }
+  }
+
+  .content {
+    padding: 1rem;
+  }
+
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    color: var(--neu-text-secondary);
+    font-size: 1rem;
+  }
+
+  .empty {
+    background: var(--neu-surface);
+    border-radius: var(--neu-radius-lg);
+    padding: 2rem;
+    box-shadow: var(--neu-shadow-outset);
+    text-align: center;
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--neu-text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: var(--neu-text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .createButton {
+      background: linear-gradient(135deg, var(--neu-primary), var(--neu-accent-secondary));
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: var(--neu-radius-md);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        8px 8px 16px rgba(102, 126, 234, 0.3),
+        -8px -8px 16px rgba(255, 255, 255, 0.8);
+
+      &:hover {
+        box-shadow: 
+          12px 12px 24px rgba(102, 126, 234, 0.4),
+          -12px -12px 24px rgba(255, 255, 255, 0.9);
+        transform: translateY(-2px);
+      }
+
+      &:active {
+        transform: translateY(1px);
+      }
+    }
+  }
+
+  .campaignCard {
+    background: var(--neu-surface);
+    border-radius: var(--neu-radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--neu-shadow-outset);
+
+    .campaignHeader {
+      margin-bottom: 1.5rem;
+
+      .campaignInfo {
+        h2 {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: var(--neu-text-primary);
+          margin-bottom: 0.5rem;
+        }
+
+        h3 {
+          font-size: 1rem;
+          font-weight: 500;
+          color: var(--neu-text-secondary);
+          margin-bottom: 0.5rem;
+        }
+
+        p {
+          color: var(--neu-text-secondary);
+          font-size: 0.875rem;
+          margin-bottom: 1rem;
+          line-height: 1.4;
+        }
+
+        .status {
+          display: inline-block;
+          padding: 0.25rem 0.75rem;
+          border-radius: var(--neu-radius-sm);
+          color: white;
+          font-size: 0.75rem;
+          font-weight: 600;
+          text-transform: uppercase;
+        }
+      }
+    }
+
+    .campaignStats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+
+      .statItem {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem;
+        background: var(--neu-background);
+        border-radius: var(--neu-radius-md);
+        box-shadow: var(--neu-shadow-inset);
+
+        svg {
+          color: var(--neu-primary);
+        }
+
+        div {
+          display: flex;
+          flex-direction: column;
+
+          .statValue {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--neu-text-primary);
+          }
+
+          .statLabel {
+            font-size: 0.75rem;
+            color: var(--neu-text-secondary);
+            text-transform: uppercase;
+          }
+        }
+      }
+    }
+
+    .campaignActions {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+
+      .actionButton {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--neu-surface);
+        box-shadow: var(--neu-shadow-outset);
+        border: none;
+        padding: 0.75rem 1rem;
+        border-radius: var(--neu-radius-md);
+        color: var(--neu-text-primary);
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+
+        &:hover {
+          box-shadow: var(--neu-shadow-hover);
+          transform: translateY(-2px);
+        }
+
+        &:active {
+          box-shadow: var(--neu-shadow-pressed);
+          transform: translateY(1px);
+        }
+      }
+
+      .analyticsButton {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: linear-gradient(135deg, var(--neu-primary), var(--neu-accent-secondary));
+        color: white;
+        border: none;
+        padding: 0.75rem 1rem;
+        border-radius: var(--neu-radius-md);
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        box-shadow: 
+          4px 4px 8px rgba(102, 126, 234, 0.3),
+          -4px -4px 8px rgba(255, 255, 255, 0.8);
+
+        &:hover {
+          box-shadow: 
+            6px 6px 12px rgba(102, 126, 234, 0.4),
+            -6px -6px 12px rgba(255, 255, 255, 0.9);
+          transform: translateY(-2px);
+        }
+
+        &:active {
+          transform: translateY(1px);
+        }
+      }
+    }
+
+    .campaignDates {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+
+      .dateInfo {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem;
+        background: var(--neu-background);
+        border-radius: var(--neu-radius-sm);
+        box-shadow: var(--neu-shadow-inset);
+
+        .dateLabel {
+          font-size: 0.75rem;
+          color: var(--neu-text-secondary);
+          font-weight: 500;
+        }
+
+        span:last-child {
+          font-size: 0.875rem;
+          color: var(--neu-text-primary);
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  .filters {
+    margin-bottom: 24px;
+
+    .statusFilter {
+      padding: 10px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+
+      option {
+        background: #667eea;
+        color: white;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.4);
+      }
+    }
+  }
+
+  .campaignsList {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 32px;
+
+    .pageButton {
+      padding: 8px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+
+    .pageInfo {
+      font-size: 14px;
+      font-weight: 500;
+    }
+  }
+
+  // Адаптивность
+  @media (max-width: 768px) {
+    .campaignCard {
+      .campaignStats {
+        grid-template-columns: 1fr;
+      }
+
+      .campaignActions {
+        flex-direction: column;
+
+        .actionButton,
+        .analyticsButton {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      .campaignDates {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    .pagination {
+      flex-direction: column;
+      gap: 12px;
+
+      .pageButton {
+        width: 100%;
+      }
+    }
+  }
+} 

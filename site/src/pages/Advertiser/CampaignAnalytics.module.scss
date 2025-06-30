@@ -1,0 +1,458 @@
+// Стили для аналитики кампании
+.analyticsPage {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  .loading, .error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    .headerContent {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      height: 64px;
+      max-width: 1200px;
+      margin: 0 auto;
+
+      .backButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.2);
+          transform: translateX(-2px);
+        }
+      }
+
+      .campaignInfo {
+        h1 {
+          font-size: 20px;
+          font-weight: 600;
+          margin: 0;
+          background: linear-gradient(45deg, #fff, #e0e6ff);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        p {
+          font-size: 14px;
+          margin: 4px 0 0 0;
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+
+  .content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 20px;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 32px;
+
+    .periodSelector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .periodSelect {
+        padding: 8px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-size: 14px;
+        cursor: pointer;
+
+        option {
+          background: #667eea;
+          color: white;
+        }
+
+        &:focus {
+          outline: none;
+          border-color: rgba(255, 255, 255, 0.4);
+        }
+      }
+    }
+  }
+
+  .summaryCards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+
+    .summaryCard {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .cardIcon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .cardContent {
+        flex: 1;
+
+        h3 {
+          font-size: 14px;
+          font-weight: 500;
+          margin: 0 0 8px 0;
+          opacity: 0.8;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .cardValue {
+          font-size: 24px;
+          font-weight: 700;
+          background: linear-gradient(45deg, #fff, #e0e6ff);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+      }
+    }
+  }
+
+  .chartSection {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 32px;
+
+    h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 24px 0;
+      background: linear-gradient(45deg, #fff, #e0e6ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .chart {
+      .chartGrid {
+        display: flex;
+        align-items: flex-end;
+        gap: 4px;
+        height: 200px;
+        padding: 0 0 32px 0;
+        overflow-x: auto;
+
+        .chartBar {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+          min-width: 40px;
+
+          .barGroup {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 160px;
+
+            .impressionsBar {
+              width: 16px;
+              background: linear-gradient(180deg, #4CAF50, #45a049);
+              border-radius: 2px 2px 0 0;
+              transition: all 0.2s ease;
+
+              &:hover {
+                background: linear-gradient(180deg, #66BB6A, #4CAF50);
+              }
+            }
+
+            .clicksBar {
+              width: 16px;
+              background: linear-gradient(180deg, #2196F3, #1976D2);
+              border-radius: 2px 2px 0 0;
+              transition: all 0.2s ease;
+
+              &:hover {
+                background: linear-gradient(180deg, #42A5F5, #2196F3);
+              }
+            }
+          }
+
+          .barLabel {
+            font-size: 11px;
+            opacity: 0.7;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+          }
+        }
+      }
+
+      .chartLegend {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        margin-top: 16px;
+
+        .legendItem {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 14px;
+
+          .legendColor {
+            width: 16px;
+            height: 16px;
+            border-radius: 2px;
+          }
+        }
+      }
+    }
+  }
+
+  .detailsSection {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 24px;
+
+    h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 24px 0;
+      background: linear-gradient(45deg, #fff, #e0e6ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .statsTable {
+      .tableHeader {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        gap: 16px;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 14px;
+        font-weight: 600;
+        opacity: 0.8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .tableRow {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        gap: 16px;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 14px;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.05);
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .ctrCell {
+          color: #4CAF50;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+// Адаптивность
+@media (max-width: 768px) {
+  .analyticsPage {
+    .header {
+      padding: 0 16px;
+
+      .headerContent {
+        .campaignInfo {
+          h1 {
+            font-size: 18px;
+          }
+
+          p {
+            font-size: 13px;
+          }
+        }
+      }
+    }
+
+    .content {
+      padding: 24px 16px;
+    }
+
+    .summaryCards {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+
+      .summaryCard {
+        padding: 20px;
+
+        .cardIcon {
+          width: 40px;
+          height: 40px;
+        }
+
+        .cardContent {
+          .cardValue {
+            font-size: 20px;
+          }
+        }
+      }
+    }
+
+    .chartSection {
+      padding: 20px;
+
+      .chart {
+        .chartGrid {
+          height: 150px;
+
+          .chartBar {
+            min-width: 30px;
+
+            .barGroup {
+              height: 120px;
+
+              .impressionsBar,
+              .clicksBar {
+                width: 12px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .detailsSection {
+      padding: 20px;
+
+      .statsTable {
+        overflow-x: auto;
+
+        .tableHeader,
+        .tableRow {
+          grid-template-columns: 80px 60px 60px 60px 80px;
+          gap: 8px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .analyticsPage {
+    .summaryCards {
+      grid-template-columns: 1fr;
+
+      .summaryCard {
+        padding: 16px;
+        gap: 12px;
+
+        .cardIcon {
+          width: 36px;
+          height: 36px;
+        }
+
+        .cardContent {
+          .cardValue {
+            font-size: 18px;
+          }
+        }
+      }
+    }
+
+    .chartSection {
+      .chart {
+        .chartGrid {
+          height: 120px;
+
+          .chartBar {
+            min-width: 24px;
+
+            .barGroup {
+              height: 90px;
+
+              .impressionsBar,
+              .clicksBar {
+                width: 8px;
+              }
+            }
+
+            .barLabel {
+              font-size: 9px;
+            }
+          }
+        }
+
+        .chartLegend {
+          gap: 12px;
+
+          .legendItem {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+} 

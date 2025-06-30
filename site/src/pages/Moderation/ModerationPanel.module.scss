@@ -1,0 +1,231 @@
+.moderationPage {
+  min-height: 100vh;
+  overflow-y: auto;
+  position: relative;
+  background: var(--neu-background);
+
+  .header {
+    position: sticky;
+    top: 0;
+    background: var(--neu-background);
+    border-bottom: 1px solid var(--neu-border);
+    z-index: 10;
+
+    .headerContent {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+
+      .backButton {
+        background: var(--neu-surface);
+        box-shadow: var(--neu-shadow-outset);
+        padding: 0.5rem;
+        border-radius: var(--neu-radius-md);
+        margin-right: 0.75rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        color: var(--neu-text-primary);
+        
+        &:hover {
+          box-shadow: var(--neu-shadow-hover);
+          transform: translateY(-2px);
+        }
+        
+        &:active {
+          box-shadow: var(--neu-shadow-pressed);
+          transform: translateY(1px);
+        }
+      }
+
+      h1 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--neu-text-primary);
+        margin: 0;
+      }
+    }
+  }
+}
+
+.content {
+  padding: 1rem;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  .statCard {
+    background: var(--neu-surface);
+    border-radius: var(--neu-radius-lg);
+    padding: 1rem;
+    box-shadow: var(--neu-shadow-outset);
+    text-align: center;
+
+    h3 {
+      font-size: 0.875rem;
+      color: var(--neu-text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .statValue {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--neu-text-primary);
+    }
+
+    p {
+      font-size: 0.75rem;
+      color: var(--neu-text-secondary);
+      margin-top: 0.25rem;
+    }
+  }
+}
+
+.menuGrid {
+  display: grid;
+  gap: 1rem;
+
+  .menuCard {
+    display: flex;
+    align-items: center;
+    background: var(--neu-surface);
+    border-radius: var(--neu-radius-lg);
+    padding: 1rem;
+    width: 100%;
+    text-align: left;
+    border: none;
+    box-shadow: var(--neu-shadow-outset);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: var(--neu-shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      box-shadow: var(--neu-shadow-pressed);
+      transform: translateY(1px);
+    }
+
+    .menuIcon {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 3rem;
+      height: 3rem;
+      border-radius: var(--neu-radius-md);
+      background: var(--neu-background);
+      margin-right: 1rem;
+      color: var(--neu-primary);
+
+      .badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        background: #ff4757;
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.6rem;
+        font-weight: 600;
+      }
+    }
+
+    .menuContent {
+      flex: 1;
+
+      h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        color: var(--neu-text-primary);
+      }
+
+      p {
+        font-size: 0.875rem;
+        color: var(--neu-text-secondary);
+      }
+    }
+  }
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 1rem;
+
+    .headerContent {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+
+      .titleSection {
+        flex-direction: column;
+        gap: 0.5rem;
+
+        h1 {
+          font-size: 1.5rem;
+        }
+      }
+    }
+  }
+
+  .content {
+    padding: 1rem;
+  }
+
+  .statsOverview {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+
+    .statCard {
+      padding: 1rem;
+
+      .statValue {
+        font-size: 2rem;
+      }
+    }
+  }
+
+  .menuGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+
+    .menuCard {
+      padding: 1rem;
+
+      .menuIcon {
+        width: 50px;
+        height: 50px;
+      }
+
+      .menuContent {
+        h3 {
+          font-size: 1.1rem;
+        }
+
+        p {
+          font-size: 0.85rem;
+        }
+      }
+    }
+  }
+} 

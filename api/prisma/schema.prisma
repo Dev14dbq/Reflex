@@ -1,0 +1,359 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Like {
+  id          String   @id @default(cuid())
+  fromUserId  String
+  toProfileId String
+  isLike      Boolean
+  createdAt   DateTime @default(now())
+  fromUser    User     @relation("LikesFrom", fields: [fromUserId], references: [id])
+  toProfile   Profile  @relation("LikesTo", fields: [toProfileId], references: [id])
+
+  @@unique([fromUserId, toProfileId])
+}
+
+model Match {
+  id        String   @id @default(cuid())
+  user1Id   String
+  user2Id   String
+  createdAt DateTime @default(now())
+  user1     User     @relation("MatchUser1", fields: [user1Id], references: [id])
+  user2     User     @relation("MatchUser2", fields: [user2Id], references: [id])
+
+  @@unique([user1Id, user2Id])
+}
+
+model User {
+  id             String    @id @default(cuid())
+  telegramId     BigInt    @unique
+  username       String?
+  firstName      String?
+  lastName       String?
+  language       String?
+  hash           String    @unique
+  trustScore     Int       @default(40) // Уровень доверия (10-100)
+  blocked        Boolean   @default(false)
+  blockReason    String?
+  blockedAt      DateTime?
+  blockedBy      String?   // ID админа/модератора который заблокировал
+  // Роли пользователя
+  isAdmin        Boolean   @default(false)  // Главный админ
+  isModerator    Boolean   @default(false)  // Модератор
+  isAdvertiser   Boolean   @default(false)  // Рекламодатель
+  roleGrantedBy  String?   // ID админа который дал роль
+  roleGrantedAt  DateTime? // Когда была дана роль
+  createdAt      DateTime  @default(now())
+  chatsA         Chat[]    @relation("ChatUserA")
+  chatsB         Chat[]    @relation("ChatUserB")
+  likesSent      Like[]    @relation("LikesFrom")
+  matchesAsUser1 Match[]   @relation("MatchUser1")
+  matchesAsUser2 Match[]   @relation("MatchUser2")
+  messages       Message[]
+  profile        Profile?
+  settings       Settings?
+  trustLogs      TrustLog[]
+  // Связи для админки
+  complaints     Complaint[]         @relation("ComplaintUser")
+  complaintsReported Complaint[]     @relation("ComplaintReporter")
+  moderatorActions   ModeratorAction[] @relation("ModeratorUser")
+  moderatorActionsBy ModeratorAction[] @relation("ActionBy")
+  adCampaigns    AdCampaign[]
+  adClicks       AdUserClick[]
+  newsCreated    News[]
+  moderatorMessagesUser ModeratorMessage[] @relation("ModeratorChatUser")
+  moderatorMessagesModerator ModeratorMessage[] @relation("ModeratorChatModerator")
+}
+
+model Profile {
+  id            String      @id @default(cuid())
+  userId        String      @unique
+  preferredName String
+  gender        String
+  birthYear     String
+  city          String
+  goals         String[]
+  description   String
+  images        String[]    @default([])
+  imageData     Image[]
+  likesReceived Like[]      @relation("LikesTo")
+  // Модерация профиля
+  isVerified    Boolean     @default(false)  // Верифицирован модератором
+  isFlagged     Boolean     @default(false)  // Помечен как подозрительный
+  moderatedAt   DateTime?   // Когда модерировался
+  moderatedBy   String?     // ID модератора
+  moderationNote String?    // Заметка модератора
+  user          User        @relation(fields: [userId], references: [id])
+
+  @@index([isVerified])
+  @@index([isFlagged])
+}
+
+model Image {
+  id             String    @id @default(cuid())
+  profileId      String
+  url            String
+  order          Int
+  isNsfw         Boolean   @default(false)
+  nsfwScore      Float?
+  nsfwCategories Json?
+  uploadedAt     DateTime  @default(now())
+  width          Int?
+  height         Int?
+  size           Int?
+  format         String?
+  isApproved     Boolean   @default(true)
+  moderatedAt    DateTime?
+  moderatedBy    String?
+  profile        Profile   @relation(fields: [profileId], references: [id])
+
+  @@index([profileId])
+  @@index([isNsfw])
+  @@index([isApproved])
+}
+
+model Chat {
+  id            String    @id @default(cuid())
+  userAId       String
+  userBId       String
+  createdAt     DateTime  @default(now())
+  isArchivedByA Boolean   @default(false)
+  isArchivedByB Boolean   @default(false)
+  isDeletedByA  Boolean   @default(false)
+  isDeletedByB  Boolean   @default(false)
+  updatedAt     DateTime  @updatedAt
+  userA         User      @relation("ChatUserA", fields: [userAId], references: [id])
+  userB         User      @relation("ChatUserB", fields: [userBId], references: [id])
+  messages      Message[]
+
+  @@unique([userAId, userBId])
+}
+
+model Message {
+  id                String    @id @default(cuid())
+  chatId            String
+  senderId          String
+  text              String?
+  media             String?
+  type              String
+  createdAt         DateTime  @default(now())
+  editedAt          DateTime?
+  isDeletedBySender Boolean   @default(false)
+  readAt            DateTime?
+  // Сообщения от админов/модераторов
+  isSystemMessage   Boolean   @default(false)  // Системное сообщение
+  systemSenderType  String?   // "admin" | "moderator" | "system"
+  systemSenderName  String?   // "Администрация" | "Модерация"
+  chat              Chat      @relation(fields: [chatId], references: [id])
+  sender            User      @relation(fields: [senderId], references: [id])
+
+  @@index([isSystemMessage])
+}
+
+model Settings {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  // Уведомления
+  notifyMessages      Boolean  @default(true)
+  notifyLikes         Boolean  @default(true)
+  notifyNews          Boolean  @default(true)   // Обычные новости
+  notifyTechUpdates   Boolean  @default(false)  // Технические обновления
+  notifyAds           Boolean  @default(true)
+  notifyTech          Boolean  @default(false)
+  notifyModeration    Boolean  @default(true)   // Уведомления от модерации
+  // Рекомендации
+  similarAge          Boolean  @default(true)  // Показывать пользователей похожего возраста
+  localFirst          Boolean  @default(true)  // Упор на локальные анкеты
+  showNsfw            Boolean  @default(false) // Показывать NSFW изображения
+  sameCityOnly        Boolean  @default(false) // Только из моего города
+  ageRangeMin         Int?     // Минимальный возраст (если не similarAge)
+  ageRangeMax         Int?     // Максимальный возраст (если не similarAge)
+  maxDistance         Int?     // Максимальная дистанция в км
+  // Рекламные предпочтения
+  adInterests         String[] @default([])     // Интересы для таргетинга рекламы
+  updatedAt           DateTime @updatedAt
+  user                User     @relation(fields: [userId], references: [id])
+}
+
+model TrustLog {
+  id         String   @id @default(cuid())
+  userId     String
+  oldScore   Int
+  newScore   Int
+  reason     String   // Причина изменения
+  details    Json?    // Дополнительные данные
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// === НОВЫЕ МОДЕЛИ ДЛЯ АДМИНКИ ===
+
+// Жалобы пользователей
+model Complaint {
+  id          String    @id @default(cuid())
+  reporterId  String    // Кто пожаловался
+  userId      String    // На кого пожаловались
+  type        String    // "profile" | "message" | "behavior"
+  reason      String    // Причина жалобы
+  description String    // Описание
+  evidence    Json?     // Доказательства (скриншоты, ссылки)
+  status      String    @default("pending") // "pending" | "reviewing" | "resolved" | "dismissed"
+  priority    String    @default("medium")  // "low" | "medium" | "high" | "urgent"
+  assignedTo  String?   // ID модератора назначенного на жалобу
+  resolution  String?   // Решение модератора
+  resolvedBy  String?   // ID модератора который разрешил жалобу
+  createdAt   DateTime  @default(now())
+  resolvedAt  DateTime?
+  reporter    User      @relation("ComplaintReporter", fields: [reporterId], references: [id])
+  user        User      @relation("ComplaintUser", fields: [userId], references: [id])
+
+  @@index([status])
+  @@index([priority])
+  @@index([assignedTo])
+  @@index([createdAt])
+}
+
+// Действия модераторов/админов
+model ModeratorAction {
+  id          String   @id @default(cuid())
+  moderatorId String   // ID модератора/админа
+  userId      String   // На кого направлено действие
+  action      String   // "block" | "unblock" | "verify" | "flag" | "message" | "delete_profile"
+  reason      String   // Причина действия
+  details     Json?    // Дополнительные данные
+  createdAt   DateTime @default(now())
+  moderator   User     @relation("ActionBy", fields: [moderatorId], references: [id])
+  user        User     @relation("ModeratorUser", fields: [userId], references: [id])
+
+  @@index([moderatorId])
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+// Новости и обновления
+model News {
+  id           String    @id @default(cuid())
+  title        String
+  content      String
+  type         String    @default("news") // "news" | "tech_update"
+  priority     String    @default("medium") // "low" | "medium" | "high" | "urgent"
+  targetUsers  String[]  @default([])      // Если пусто - всем, иначе список ID пользователей
+  isPublished  Boolean   @default(false)
+  publishedAt  DateTime?
+  createdBy    String    // ID админа
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  // Статистика
+  sentCount    Int       @default(0)       // Сколько отправлено
+  readCount    Int       @default(0)       // Сколько прочитали
+  creator      User      @relation(fields: [createdBy], references: [id])
+
+  @@index([type])
+  @@index([isPublished])
+  @@index([publishedAt])
+  @@index([priority])
+}
+
+// Рекламные кампании
+model AdCampaign {
+  id              String      @id @default(cuid())
+  advertiserId    String      // ID рекламодателя
+  title           String      // Название кампании
+  description     String?     // Описание
+  status          String      @default("draft") // "draft" | "active" | "paused" | "completed"
+  // Контент рекламы
+  adTitle         String      // Заголовок объявления
+  adDescription   String      // Описание объявления
+  adImageUrl      String?     // Изображение
+  buttonText      String      @default("Узнать больше") // Текст кнопки
+  buttonUrl       String      // Ссылка кнопки
+  // Таргетинг
+  targetAgeMin    Int?        // Минимальный возраст
+  targetAgeMax    Int?        // Максимальный возраст
+  targetGenders   String[]    @default([]) // Целевые роли/гендеры
+  targetCities    String[]    @default([]) // Целевые города
+  targetInterests String[]    @default([]) // Целевые интересы
+  // Настройки показа
+  weight          Int         @default(1)  // Вес рекламы (1-10)
+  dailyBudget     Int?        // Дневной лимит показов
+  totalBudget     Int?        // Общий лимит показов
+  startDate       DateTime?   // Дата начала
+  endDate         DateTime?   // Дата окончания
+  // Статистика
+  impressions     Int         @default(0)  // Показы
+  clicks          Int         @default(0)  // Клики
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  // Связи
+  advertiser      User        @relation(fields: [advertiserId], references: [id])
+  analytics       AdAnalytic[]
+  userClicks      AdUserClick[]
+
+  @@index([status])
+  @@index([advertiserId])
+  @@index([weight])
+  @@index([startDate])
+  @@index([endDate])
+}
+
+// Аналитика рекламы (по дням)
+model AdAnalytic {
+  id           String     @id @default(cuid())
+  campaignId   String
+  date         DateTime   @db.Date  // Дата (без времени)
+  impressions  Int        @default(0) // Показы за день
+  clicks       Int        @default(0) // Клики за день  
+  uniqueViews  Int        @default(0) // Уникальные просмотры
+  createdAt    DateTime   @default(now())
+  campaign     AdCampaign @relation(fields: [campaignId], references: [id])
+
+  @@unique([campaignId, date])
+  @@index([campaignId])
+  @@index([date])
+}
+
+// Клики пользователей по рекламе (для исключения показанной рекламы)
+model AdUserClick {
+  id         String     @id @default(cuid())
+  userId     String     // ID пользователя который кликнул
+  campaignId String     // ID кампании по которой кликнул
+  createdAt  DateTime   @default(now())
+  
+  user       User       @relation(fields: [userId], references: [id])
+  campaign   AdCampaign @relation(fields: [campaignId], references: [id])
+
+  @@unique([userId, campaignId]) // Один пользователь может кликнуть по кампании только один раз
+  @@index([userId])
+  @@index([campaignId])
+}
+
+// Сообщения между модераторами и пользователями
+model ModeratorMessage {
+  id            String   @id @default(cuid())
+  userId        String   // ID пользователя в чате
+  moderatorId   String?  // ID модератора (если сообщение от модератора)
+  content       String   // Текст сообщения
+  fromModerator Boolean  // true - от модератора, false - от пользователя
+  isRead        Boolean  @default(false) // Прочитано ли сообщение
+  createdAt     DateTime @default(now())
+  
+  user          User     @relation("ModeratorChatUser", fields: [userId], references: [id])
+  moderator     User?    @relation("ModeratorChatModerator", fields: [moderatorId], references: [id])
+
+  @@index([userId])
+  @@index([moderatorId])
+  @@index([fromModerator])
+  @@index([isRead])
+  @@index([createdAt])
+}

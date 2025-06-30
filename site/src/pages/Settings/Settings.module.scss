@@ -1,0 +1,162 @@
+.SettingsPage {
+  padding: 20px;
+  min-height: 100vh;
+  background: var(--neu-background);
+}
+
+.profileHeader {
+  background: var(--neu-surface);
+  border-radius: var(--neu-radius-lg);
+  box-shadow: var(--neu-shadow-outset);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+
+  h2 {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--neu-text-primary);
+    margin: 0;
+  }
+
+  p {
+    font-size: 0.875rem;
+    color: var(--neu-text-secondary);
+    margin: 4px 0;
+  }
+
+  span {
+    font-size: 0.75rem;
+    color: var(--neu-text-muted);
+    background: rgba(59, 130, 246, 0.1);
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-top: 4px;
+    display: inline-block;
+  }
+}
+
+.avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  box-shadow: var(--neu-shadow-inset);
+  background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+  object-fit: cover;
+}
+
+.menuGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.menuCard {
+  background: var(--neu-surface);
+  border-radius: var(--neu-radius-lg);
+  box-shadow: var(--neu-shadow-outset);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: none;
+  text-align: left;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &:hover {
+    box-shadow: var(--neu-shadow-hover);
+    transform: translateY(-2px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: var(--neu-shadow-pressed);
+  }
+  
+  &.active {
+    background: rgba(59, 130, 246, 0.1);
+    border: 2px solid var(--neu-primary);
+  }
+}
+
+.menuIcon {
+  background: var(--neu-surface-hover);
+  border-radius: var(--neu-radius-md);
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  min-height: 48px;
+  color: var(--neu-primary);
+}
+
+.menuContent {
+  flex: 1;
+  
+  h3 {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--neu-text-primary);
+    margin: 0 0 4px 0;
+  }
+  
+  p {
+    font-size: 0.875rem;
+    color: var(--neu-text-secondary);
+    margin: 0;
+    line-height: 1.4;
+  }
+}
+
+.accountSection {
+  margin-top: 24px;
+}
+
+.dangerZone {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--neu-radius-lg);
+  padding: 1rem;
+  
+  h3 {
+    color: #991b1b;
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin: 0 0 8px 0;
+  }
+  
+  p {
+    color: #b91c1c;
+    font-size: 0.875rem;
+    margin: 0 0 16px 0;
+    line-height: 1.5;
+  }
+}
+
+.deleteButton {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--neu-radius-md);
+  font-weight: 500;
+  background: linear-gradient(135deg, #fca5a5, #f87171);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.1), 0 2px 4px -1px rgba(239, 68, 68, 0.06);
+  
+  &:hover {
+    background: linear-gradient(135deg, #f87171, #ef4444);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 15px -3px rgba(239, 68, 68, 0.2), 0 4px 6px -2px rgba(239, 68, 68, 0.1);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.1), 0 2px 4px -1px rgba(239, 68, 68, 0.06);
+  }
+}

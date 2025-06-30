@@ -1,0 +1,382 @@
+// Стили для создания кампании
+.createCampaignPage {
+  min-height: 100vh;
+  overflow-y: auto;
+  position: relative;
+  background: var(--neu-background);
+
+  .header {
+    position: sticky;
+    top: 0;
+    background: var(--neu-background);
+    border-bottom: 1px solid var(--neu-border);
+    z-index: 10;
+
+    .headerContent {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+
+      .backButton {
+        background: var(--neu-surface);
+        box-shadow: var(--neu-shadow-outset);
+        padding: 0.5rem;
+        border-radius: var(--neu-radius-md);
+        margin-right: 0.75rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        color: var(--neu-text-primary);
+        
+        &:hover {
+          box-shadow: var(--neu-shadow-hover);
+          transform: translateY(-2px);
+        }
+        
+        &:active {
+          box-shadow: var(--neu-shadow-pressed);
+          transform: translateY(1px);
+        }
+      }
+
+      h1 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--neu-text-primary);
+        margin: 0;
+      }
+    }
+  }
+
+  .content {
+    padding: 1rem;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    .section {
+      background: var(--neu-surface);
+      border-radius: var(--neu-radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--neu-shadow-outset);
+
+      h2 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--neu-text-primary);
+        margin-bottom: 1rem;
+      }
+
+      .inputGroup {
+        margin-bottom: 1rem;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        label {
+          display: block;
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: var(--neu-text-secondary);
+          margin-bottom: 0.5rem;
+        }
+
+        input,
+        textarea,
+        select {
+          width: 100%;
+          padding: 0.75rem;
+          border: none;
+          border-radius: var(--neu-radius-md);
+          background: var(--neu-background);
+          box-shadow: var(--neu-shadow-inset);
+          color: var(--neu-text-primary);
+          font-size: 1rem;
+          transition: all 0.2s ease;
+
+          &:focus {
+            outline: none;
+            box-shadow: var(--neu-shadow-inset), 0 0 0 2px var(--neu-primary);
+          }
+
+          &::placeholder {
+            color: var(--neu-text-muted);
+          }
+        }
+
+        textarea {
+          resize: vertical;
+          min-height: 80px;
+        }
+      }
+
+      .inputRow {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      .addItemContainer {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+
+        input {
+          flex: 1;
+        }
+
+        .addButton {
+          padding: 0.75rem 1rem;
+          background: var(--neu-primary);
+          color: white;
+          border: none;
+          border-radius: var(--neu-radius-md);
+          cursor: pointer;
+          font-weight: 500;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background: var(--neu-accent-secondary);
+          }
+
+          &:active {
+            transform: scale(0.95);
+          }
+        }
+      }
+
+      .areaContainer {
+        .mapButton {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          background: var(--neu-surface);
+          box-shadow: var(--neu-shadow-outset);
+          border: none;
+          padding: 1rem;
+          border-radius: var(--neu-radius-md);
+          color: var(--neu-text-primary);
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-size: 1rem;
+          width: 100%;
+          margin-bottom: 0.5rem;
+
+          &:hover {
+            box-shadow: var(--neu-shadow-hover);
+            transform: translateY(-2px);
+          }
+
+          &:active {
+            box-shadow: var(--neu-shadow-pressed);
+            transform: translateY(1px);
+          }
+
+          svg {
+            color: var(--neu-primary);
+          }
+        }
+
+        .areaInfo {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          background: var(--neu-surface);
+          border: 2px solid var(--neu-primary);
+          padding: 0.75rem;
+          border-radius: var(--neu-radius-md);
+          margin: 0.5rem 0;
+          font-size: 0.875rem;
+
+          svg {
+            flex-shrink: 0;
+            color: var(--neu-primary);
+          }
+
+          span {
+            flex: 1;
+            color: var(--neu-text-primary);
+            line-height: 1.4;
+          }
+
+          .editButton {
+            background: var(--neu-primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--neu-radius-sm);
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s ease;
+
+            &:hover {
+              background: var(--neu-accent-secondary);
+            }
+          }
+
+          .removeButton {
+            background: #dc3545;
+            color: white;
+            cursor: pointer;
+            font-size: 1.25rem;
+            padding: 0;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: none;
+            margin-left: 0.5rem;
+
+            &:hover {
+              background: #c82333;
+            }
+          }
+        }
+
+        .hint {
+          display: block;
+          color: var(--neu-text-muted);
+          font-size: 0.75rem;
+          margin-top: 0.5rem;
+          line-height: 1.4;
+        }
+      }
+
+      .priorityInfo {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem;
+        background: var(--neu-background);
+        border-radius: var(--neu-radius-md);
+        box-shadow: var(--neu-shadow-inset);
+
+        .priorityValue {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: var(--neu-primary);
+        }
+
+        small {
+          color: var(--neu-text-secondary);
+          font-size: 0.875rem;
+        }
+      }
+    }
+
+    .audienceCard {
+      background: var(--neu-surface);
+      border-radius: var(--neu-radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--neu-shadow-outset);
+      text-align: center;
+
+      h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--neu-text-primary);
+        margin-bottom: 0.5rem;
+      }
+
+      p {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--neu-primary);
+        margin-bottom: 1rem;
+      }
+
+      .calculateButton {
+        background: var(--neu-surface);
+        box-shadow: var(--neu-shadow-outset);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: var(--neu-radius-md);
+        color: var(--neu-text-primary);
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          box-shadow: var(--neu-shadow-hover);
+          transform: translateY(-2px);
+        }
+
+        &:active {
+          box-shadow: var(--neu-shadow-pressed);
+          transform: translateY(1px);
+        }
+      }
+    }
+
+    .submitButton {
+      background: linear-gradient(135deg, var(--neu-primary), var(--neu-accent-secondary));
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: var(--neu-radius-md);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        8px 8px 16px rgba(102, 126, 234, 0.3),
+        -8px -8px 16px rgba(255, 255, 255, 0.8);
+
+      &:hover:not(:disabled) {
+        box-shadow: 
+          12px 12px 24px rgba(102, 126, 234, 0.4),
+          -12px -12px 24px rgba(255, 255, 255, 0.9);
+        transform: translateY(-2px);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(1px);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+// Адаптивность
+@media (max-width: 768px) {
+  .createCampaignPage {
+    .header {
+      padding: 0 16px;
+
+      .headerContent {
+        h1 {
+          font-size: 20px;
+        }
+      }
+    }
+
+    .content {
+      padding: 24px 16px;
+    }
+
+    .form {
+      gap: 24px;
+
+      .section {
+        padding: 20px;
+
+        h2 {
+          font-size: 16px;
+        }
+      }
+
+      .submitButton {
+        width: 100%;
+      }
+    }
+  }
+} 

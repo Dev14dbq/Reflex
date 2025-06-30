@@ -1,0 +1,327 @@
+.statsPage {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.header {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  .backButton {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+    flex: 1;
+  }
+
+  .dateRangeSelector {
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 25px;
+    padding: 0.25rem;
+
+    .rangeButton {
+      background: transparent;
+      border: none;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      font-weight: 500;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      &.active {
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+}
+
+.content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+
+  .statCard {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-left: 4px solid;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+    }
+
+    .statIcon {
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .statContent {
+      flex: 1;
+
+      h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 0.9rem;
+        opacity: 0.8;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 500;
+      }
+
+      .statValue {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0.25rem 0;
+        color: #ffd700;
+      }
+
+      p {
+        margin: 0;
+        font-size: 0.85rem;
+        opacity: 0.7;
+        line-height: 1.3;
+      }
+
+      .trend {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+
+        &.positive {
+          color: #2ed573;
+        }
+
+        &.negative {
+          color: #ff4757;
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+}
+
+.efficiencySection {
+  margin-bottom: 3rem;
+
+  h2 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .efficiencyGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+
+    .efficiencyCard {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-3px);
+      }
+
+      .efficiencyHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+
+        .efficiencyTitle {
+          font-size: 0.9rem;
+          opacity: 0.8;
+          font-weight: 500;
+        }
+
+        .efficiencyStatus {
+          font-size: 1.2rem;
+
+          &.excellent {
+            filter: hue-rotate(0deg);
+          }
+
+          &.good {
+            filter: hue-rotate(120deg);
+          }
+
+          &.needs-improvement {
+            filter: hue-rotate(60deg);
+          }
+        }
+      }
+
+      .efficiencyValue {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #ffd700;
+      }
+    }
+  }
+}
+
+.actionButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  .actionButton {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 1rem;
+    flex-direction: column;
+    align-items: stretch;
+
+    h1 {
+      font-size: 1.4rem;
+      text-align: center;
+    }
+
+    .dateRangeSelector {
+      justify-content: center;
+    }
+  }
+
+  .content {
+    padding: 1rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+
+    .statCard {
+      padding: 1rem;
+
+      .statIcon {
+        width: 50px;
+        height: 50px;
+      }
+
+      .statContent {
+        .statValue {
+          font-size: 1.6rem;
+        }
+      }
+    }
+  }
+
+  .efficiencySection {
+    .efficiencyGrid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+
+      .efficiencyCard {
+        padding: 1rem;
+
+        .efficiencyValue {
+          font-size: 1.6rem;
+        }
+      }
+    }
+  }
+
+  .actionButtons {
+    flex-direction: column;
+    align-items: stretch;
+
+    .actionButton {
+      justify-content: center;
+    }
+  }
+} 

@@ -1,13 +1,12 @@
 import { Router } from "express";
-import { prisma } from "./prisma";
-import { authMiddleware } from "./middleware/auth";
-import fs from "fs";
+import { prisma } from "./prisma.ts";
+import { authMiddleware } from "./middleware/auth.ts";
 import fsPromises from "fs/promises";
 import path from "path";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-import { checkImageNsfw } from "./nsfw";
-import { changeTrustScore, TrustChangeReason, checkProfileCompleteness, checkNsfwContent } from "./trust";
+import { checkImageNsfw } from "./nsfw.ts";
+import { changeTrustScore, TrustChangeReason, checkProfileCompleteness, checkNsfwContent } from "./trust.ts";
 
 const profileRouter = Router();
 

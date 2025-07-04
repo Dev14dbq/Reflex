@@ -1,6 +1,7 @@
 // src/pages/RegisterProfile/RegisterProfile.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { 
   FiUser, 
   FiMapPin, 
@@ -15,9 +16,11 @@ import {
   FiFileText,
   FiLock
 } from "react-icons/fi";
-import { PageTransition } from "../../components/ui/PageTransition";
-import { useCitySearch } from '../../hooks/useCitySearch';
+
+import { PageTransition } from "@components/ui/PageTransition";
+import { useCitySearch } from '@hooks/useCitySearch';
 import styles from "./RegisterProfile.module.scss";
+import api from "@api";
 
 interface FormData {
   name: string;
@@ -273,21 +276,20 @@ export const RegisterProfile: React.FC<{ className?: string }> = ({ className })
       : [`https://api.dicebear.com/7.x/thumbs/svg?seed=${Math.floor(Math.random() * 1000000)}`];
 
     try {
-      const res = await fetch("https://spectrmod.ru/api/profile/create", {
-        method: "POST",
+      const res = await api.post("/profile/create", {
+        preferredName: form.name,
+        gender: form.gender,
+        birthYear: form.birthYear,
+        city: form.city,
+        goals: form.goals,
+        description: form.bio,
+        images: avatarUrl,
+      },
+      {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify({
-          preferredName: form.name,
-          gender: form.gender,
-          birthYear: form.birthYear,
-          city: form.city,
-          goals: form.goals,
-          description: form.bio,
-          images: avatarUrl,
-        }),
       });
 
       if (!res.ok) {

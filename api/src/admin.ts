@@ -1,8 +1,8 @@
 // src/admin.ts - API для админ-панели
 import { Router, Response, NextFunction } from "express";
-import { prisma } from "./prisma";
-import { authMiddleware } from "./middleware/auth";
-import { sendTG } from "./notify";
+import { prisma } from "./prisma.ts";
+import { authMiddleware } from "./middleware/auth.ts";
+import { sendTG } from "./notify.ts";
 
 const router = Router();
 

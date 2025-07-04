@@ -4,6 +4,8 @@ import { FiArrowLeft, FiTrash2, FiSearch, FiChevronLeft, FiChevronRight, FiMoreV
 import styles from './AdminPanel.module.scss';
 import clsx from 'clsx';
 
+import api from '@api';
+
 interface User {
   id: string;
   telegramId: string;
@@ -28,13 +30,14 @@ const RoleManager: React.FC<{ user: User, onRoleChange: () => void }> = ({ user,
   const handleRoleChange = async (role: 'admin' | 'moderator' | 'advertiser', grant: boolean) => {
     try {
       const token = localStorage.getItem('token');
-      await fetch(`https://spectrmod.ru/api/admin/users/${user.id}/role`, {
-        method: 'POST',
+      await api.post(`/admin/users/${user.id}/role`, {
+        role,
+        grant
+      },{
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ role, grant })
+        }
       });
       onRoleChange();
       setIsOpen(false);
@@ -97,8 +100,10 @@ export const AdminUsers: React.FC = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://spectrmod.ru/api/admin/users?page=${page}&search=${search}`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await api.get(`/admin/users?page=${page}&search=${search}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       const data = await response.json();
       setUsers(data.users);
@@ -128,9 +133,10 @@ export const AdminUsers: React.FC = () => {
     if (window.confirm('Вы уверены, что хотите удалить этого пользователя?')) {
       try {
         const token = localStorage.getItem('token');
-        await fetch(`https://spectrmod.ru/api/admin/users/${userId}`, {
-          method: 'DELETE',
-          headers: { Authorization: `Bearer ${token}` }
+        await api.delete(`/admin/users/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         });
         fetchUsers();
       } catch (error) {

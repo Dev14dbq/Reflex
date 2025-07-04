@@ -13,6 +13,8 @@ import {
 import styles from './AdminPanel.module.scss';
 import moderationStyles from './AdminAdvertisement.module.scss';
 
+import api from '@api';
+
 interface Campaign {
   id: string;
   title: string;
@@ -54,8 +56,10 @@ export const AdminAdvertisement: React.FC = () => {
   const fetchCampaigns = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('https://spectrmod.ru/api/advertising/admin/campaigns', {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await api.get('/advertising/admin/campaigns', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       
       if (response.ok) {
@@ -78,16 +82,14 @@ export const AdminAdvertisement: React.FC = () => {
     setProcessingId(campaignId);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://spectrmod.ru/api/advertising/admin/campaigns/${campaignId}/moderate`, {
-        method: 'POST',
+      const response = await api.post(`/advertising/admin/campaigns/${campaignId}/moderate`, {
+        action,
+        comment: moderationComment.trim() || null
+      },{
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          action,
-          comment: moderationComment.trim() || null
-        })
+        }
       });
 
       if (response.ok) {
@@ -219,10 +221,10 @@ export const AdminAdvertisement: React.FC = () => {
                     <div className={moderationStyles.adText}>
                       <h4>{campaign.adTitle}</h4>
                       <p>{campaign.adDescription}</p>
-                      <div className={moderationStyles.adButton}>
+                      <a href={campaign.buttonUrl} target="_blank" rel="noopener noreferrer" className={moderationStyles.adButton}>
                         <FiExternalLink size={14} />
                         {campaign.buttonText}
-                      </div>
+                      </a>
                     </div>
                   </div>
 
@@ -237,13 +239,6 @@ export const AdminAdvertisement: React.FC = () => {
                 </div>
 
                 <div className={moderationStyles.moderationActions}>
-                  <button
-                    className={moderationStyles.viewButton}
-                    onClick={() => setSelectedCampaign(campaign)}
-                  >
-                    <FiEye size={16} />
-                    Подробнее
-                  </button>
                   <button
                     className={moderationStyles.approveButton}
                     onClick={() => moderateCampaign(campaign.id, 'approve')}
@@ -260,7 +255,17 @@ export const AdminAdvertisement: React.FC = () => {
                     Отклонить
                   </button>
                 </div>
-              </div>
+                <div className={moderationStyles.moderationActions}>
+
+                <button
+                    className={moderationStyles.viewButton}
+                    onClick={() => setSelectedCampaign(campaign)}
+                  >
+                    <FiEye size={16} />
+                    Подробнее
+                  </button>
+                </div>
+                </div>
             ))
           )}
         </div>

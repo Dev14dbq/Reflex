@@ -1,85 +1,130 @@
+import { FiArrowLeft, FiStar } from 'react-icons/fi';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { Slider } from '@mui/material';
 import clsx from 'clsx';
-import { FiArrowLeft, FiStar } from 'react-icons/fi';
-import { SlidePageTransition } from '../../components/ui/PageTransition';
-import { http } from '../../services/http';
+
+import { SlidePageTransition } from '@components/ui/PageTransition';
 import styles from './RecommendationSettings.module.scss';
-import { Slider } from '@mui/material'; // если хочешь оставить MUI-слайдер
+import api from '@api';
 
 interface RecommendationSettingsData {
-  similarAge: boolean;
-  localFirst: boolean;
-  showNsfw: boolean;
-  sameCityOnly: boolean;
-  ageRangeMin: number;
-  ageRangeMax: number;
-  maxDistance: number;
+    similarAge: boolean;
+    localFirst: boolean;
+    showNsfw: boolean;
+    sameCityOnly: boolean;
+    ageRangeMin: number;
+    ageRangeMax: number;
+    maxDistance: number;
 }
 
 export const RecommendationSettings: React.FC = () => {
-  const navigate = useNavigate();
-  const [settings, setSettings] = useState<RecommendationSettingsData | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchSettings();
-  }, []);
+    const [settings, setSettings] = useState<RecommendationSettingsData | null>(null);
+    const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
-  const fetchSettings = async () => {
-    setLoading(true);
-    try {
-      const res = await http.get<{ settings: RecommendationSettingsData }>('/settings/recommendations');
-      setSettings(res.data.settings);
-    } catch (err) {
-      console.error(err);
-      setError('Не удалось загрузить настройки');
-    } finally {
-      setLoading(false);
-    }
-  };
+    useEffect(() => {
+        fetchSettings();
+    }, []);
 
-  const scheduleSave = (newSettings: RecommendationSettingsData) => {
-    if (saveTimeout) clearTimeout(saveTimeout);
-    setSaveTimeout(
-      setTimeout(() => {
-        http.put('/settings/recommendations', newSettings).catch((e) => {
-          console.error(e);
-          setError('Не удалось сохранить настройки');
-        });
-      }, 1000)
-    );
-  };
+    const fetchSettings = async () => {
+        try {
+            setLoading(true);
 
-  const handleToggle = (field: keyof RecommendationSettingsData, value: boolean) => {
-    if (!settings) return;
-    const next = { ...settings, [field]: value };
-    setSettings(next);
-    scheduleSave(next);
-  };
+            const token = localStorage.getItem('token');
+            const res = await api.get('/settings/recommendations', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+      
+            const data = await res.json();
+            setSettings(data.settings);
+        } catch (error) {
+            console.error(error);
+            setError('[API] Не удалось загрузить настройки! (Не удалось выполнить запрос к \'settings - recommendations\')');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  const handleAgeRange = (value: number[]) => {
-    if (!settings) return;
-    const next = { ...settings, ageRangeMin: value[0], ageRangeMax: value[1] };
-    setSettings(next);
-    scheduleSave(next);
-  };
+    const scheduleSave = (newSettings: RecommendationSettingsData) => {
+        if (saveTimeout) clearTimeout(saveTimeout);
 
-  const handleDistanceRange = (value: number) => {
-    if (!settings) return;
-    const next = { ...settings, maxDistance: value };
-    setSettings(next);
-    scheduleSave(next);
-  };
+        setSaveTimeout(
+            setTimeout(() => {
+                try {
+                    const token = localStorage.getItem('token');
+                    api.put('/settings/recommendations', newSettings, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+                } catch (error) {
+                    console.error(error);
+                    setError('[API] Не удалось обновить настройки! (Не удалось выполнить запрос к \'settings - recommendations\')');
+                }
+            }, 1000)
+        );
+    };
 
-  // для текста диапазона похожего возраста
-  const getSimilarAgeRange = () => {
-    if (!settings) return '';
-    const age = new Date().getFullYear() - Number(window.localStorage.getItem('birthYear') || 25);
-    return age <= 22 ? `${age - 2}–${age + 2}` : `${age - 5}–${age + 5}`;
-  };
+    const handleToggle = (field: keyof RecommendationSettingsData, value: boolean) => {
+        if (!settings) return;
+
+        const next = { ...settings, [field]: value };
+        setSettings(next); scheduleSave(next);
+    };
+
+    const handleAgeRange = (value: number[]) => {
+        if (!settings) return;
+
+        const next = { ...settings, ageRangeMin: value[0], ageRangeMax: value[1] };
+        setSettings(next); scheduleSave(next);
+    };
+
+    const handleDistanceRange = (value: number) => {
+        if (!settings) return;
+
+        const next = { ...settings, maxDistance: value };
+        setSettings(next); scheduleSave(next);
+    };
+
+    const getSimilarAgeRange = () => {
+        if (!settings) return;
+
+        const age = new Date().getFullYear() - Number(window.localStorage.getItem('birthYear') || 25);
+        return age <= 22 ? `${age - 2}–${age + 2}` : `${age - 5}–${age + 5}`;
+    };
+
+    /**
+     * Для чего то используется... Но для чего?
+     */
+
+    const ToggleRow: React.FC<{
+        label: string;
+        description: string;
+        value: boolean;
+        onChange: (v: boolean) => void;
+      }> = ({ label, description, value, onChange }) => (
+        <div className={styles.toggleRow}>
+          <div className={styles.toggleContent}>
+            <h4>{label}</h4>
+            <p>{description}</p>
+          </div>
+          <div className={styles.toggleSwitch}>
+            <button
+              onClick={() => onChange(!value)}
+              className={clsx(value ? styles.enabled : styles.disabled)}
+            >
+              <span className={clsx(styles.thumb, value ? styles.enabled : styles.disabled)} />
+            </button>
+          </div>
+        </div>
+      );
 
   return (
     <SlidePageTransition className={clsx(styles.RecommendationSettings, 'bg-neu-background')}>
@@ -190,25 +235,3 @@ export const RecommendationSettings: React.FC = () => {
     </SlidePageTransition>
   );
 };
-
-const ToggleRow: React.FC<{
-  label: string;
-  description: string;
-  value: boolean;
-  onChange: (v: boolean) => void;
-}> = ({ label, description, value, onChange }) => (
-  <div className={styles.toggleRow}>
-    <div className={styles.toggleContent}>
-      <h4>{label}</h4>
-      <p>{description}</p>
-    </div>
-    <div className={styles.toggleSwitch}>
-      <button
-        onClick={() => onChange(!value)}
-        className={clsx(value ? styles.enabled : styles.disabled)}
-      >
-        <span className={clsx(styles.thumb, value ? styles.enabled : styles.disabled)} />
-      </button>
-    </div>
-  </div>
-);

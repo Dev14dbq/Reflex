@@ -31,13 +31,13 @@ load_dotenv()
 
 # === CONFIG ===
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-API_BASE = "https://spectrmod.ru/api"
-WEBAPP_URL = "https://spectrmod.ru"  # открывается через Web-App кнопку
+API_BASE = os.getenv("api_url") or "https://spectrmod.ru/api"
+WEBAPP_URL = "https://kash-dev-reflex.vercel.app/"  # открывается через Web-App кнопку
 SUPPORT_USERNAME = "spectrmod"  # @spectrmod
 INTRO_PICTURE = "https://s.iimg.su/s/18/3dr82mIVRK6ojKvPQH2OBcYEM4pStJ0zrTo2USQ6.png"
 
 # Admins who can run maintenance commands
-ADMIN_IDS = {8072408248}
+ADMIN_IDS = {8072408248, 7001269338, 8186814795}
 
 # Endpoints
 PROFILE_BY_TG_URL = f"{API_BASE}/profile/by-telegram/{{telegram_id}}"
@@ -178,7 +178,7 @@ async def send_advertisement(chat_id: int, user_id: int):
         
     except Exception as e:
         print(f"Ошибка отправки рекламы: {e}")
-        return False
+        return True
 
 # === Handlers ===
 @dp.message(CommandStart())

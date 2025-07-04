@@ -25,7 +25,34 @@
       {
         "name": "typescript-plugin-css-modules"
       }
-    ]
+    ],
+    "baseUrl": "./src",
+    "paths": {
+      "@page/*": [
+        "pages/*"
+      ],
+      "@routes": [
+        "router/routes.tsx"
+      ],
+      "@env": [
+        "config/env.ts"
+      ],
+      "@hooks/*": [
+        "hooks/*"
+      ],
+      "@layouts/*": [
+        "layouts/*"
+      ],
+      "@stores/*": [
+        "stores/*"
+      ],
+      "@components/*": [
+        "components/*"
+      ],
+      "@api": [
+        "services/api.ts"
+      ]
+    }
   },
   "include": [
     "src"

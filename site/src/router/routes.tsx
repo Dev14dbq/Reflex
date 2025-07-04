@@ -1,44 +1,48 @@
 import React from "react";
+import api from '@api';
+
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 
-import { MainLayout } from "../layouts/MainLayout";
+import { MainLayout } from "@layouts/MainLayout";
 
-import { App } from "../pages/App/App";
-import { RegisterProfile } from "../pages/RegisterProfile/RegisterProfile";
-import { Search } from "../pages/Search/Search";
-import { ProfileView } from "../pages/Profile/Profile";
-import { Likes } from "../pages/Likes/Likes";
-import { Chat } from "../pages/Chat/Chat";
-import { Settings } from "../pages/Settings/Settings";
-import { NotificationSettings } from "../pages/Settings/NotificationSettings";
-import { RecommendationSettings } from "../pages/Settings/RecommendationSettings";
-import { Reset } from "../pages/Reset/Reset";
-import { MyProfile } from "../pages/Profile/MyProfile";
-import { CityMigration } from "../pages/CityMigration/CityMigration";
-import { AdminPanel } from "../pages/Admin/AdminPanel";
-import { AdminUsers } from "../pages/Admin/AdminUsers";
-import { AdminNews } from "../pages/Admin/AdminNews";
-import { AdminModeration } from "../pages/Admin/AdminModeration";
-import { AdminAnalytics } from "../pages/Admin/AdminAnalytics";
-import { AdminAdvertisement } from "../pages/Admin/AdminAdvertisement";
-import { ModerationPanel } from "../pages/Moderation/ModerationPanel";
-import { ModerationComplaints } from "../pages/Moderation/ModerationComplaints";
-import { ModerationStats } from "../pages/Moderation/ModerationStats";
-import { ModerationProfiles } from "../pages/Moderation/ModerationProfiles";
-import { ModerationProfilesView } from "../pages/Moderation/ModerationProfilesView";
-import { ModerationUserView } from "../pages/Moderation/ModerationUserView";
-import { ModerationChats } from "../pages/Moderation/ModerationChats";
-import { AdvertiserPanel } from "../pages/Advertiser/AdvertiserPanel";
-import { CreateCampaign } from "../pages/Advertiser/CreateCampaign";
-import { CampaignsList } from "../pages/Advertiser/CampaignsList";
-import { CampaignAnalytics } from "../pages/Advertiser/CampaignAnalytics";
-import { TermsOfService } from "../pages/Legal/TermsOfService";
-import { PrivacyPolicy } from "../pages/Legal/PrivacyPolicy";
-import { DataProcessing } from "../pages/Legal/DataProcessing";
+// TODO: Сгрупировать 
+import { App } from "@page/App/App";
+import { RegisterProfile } from "@page/RegisterProfile/RegisterProfile";
+import { Search } from "@page/Search/Search";
+import { ProfileView } from "@page/Profile/Profile";
+import { Likes } from "@page/Likes/Likes";
+import { Chat } from "@page/Chat/Chat";
+import { Settings } from "@page/Settings/Settings";
+import { NotificationSettings } from "@page/Settings/NotificationSettings";
+import { RecommendationSettings } from "@page/Settings/RecommendationSettings";
+import { Reset } from "@page/Reset/Reset";
+import { MyProfile } from "@page/Profile/MyProfile";
+import { CityMigration } from "@page/CityMigration/CityMigration";
+import { AdminPanel } from "@page/Admin/AdminPanel";
+import { AdminUsers } from "@page/Admin/AdminUsers";
+import { AdminNews } from "@page/Admin/AdminNews";
+import { AdminModeration } from "@page/Admin/AdminModeration";
+import { AdminAnalytics } from "@page/Admin/AdminAnalytics";
+import { AdminAdvertisement } from "@page/Admin/AdminAdvertisement";
+import { ModerationPanel } from "@page/Moderation/ModerationPanel";
+import { ModerationComplaints } from "@page/Moderation/ModerationComplaints";
+import { ModerationStats } from "@page/Moderation/ModerationStats";
+import { ModerationProfiles } from "@page/Moderation/ModerationProfiles";
+import { ModerationProfilesView } from "@page/Moderation/ModerationProfilesView";
+import { ModerationUserView } from "@page/Moderation/ModerationUserView";
+import { ModerationChats } from "@page/Moderation/ModerationChats";
+import { AdvertiserPanel } from "@page/Advertiser/AdvertiserPanel";
+import { CreateCampaign } from "@page/Advertiser/CreateCampaign";
+import { CampaignsList } from "@page/Advertiser/CampaignsList";
+import { CampaignAnalytics } from "@page/Advertiser/CampaignAnalytics";
+import { TermsOfService } from "@page/Legal/TermsOfService";
+import { PrivacyPolicy } from "@page/Legal/PrivacyPolicy";
+import { DataProcessing } from "@page/Legal/DataProcessing";
 
-
-// Компонент для проверки прав администратора
+/**
+ * Компонент для проверки прав. Необходимое право: Администратор
+ */
 const AdminRoute: React.FC<{ element: React.ReactElement }> = ({ element }) => {
   const [isAdmin, setIsAdmin] = React.useState<boolean | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -47,29 +51,35 @@ const AdminRoute: React.FC<{ element: React.ReactElement }> = ({ element }) => {
     const checkAdmin = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('https://spectrmod.ru/api/profile/me', {
-          headers: { Authorization: `Bearer ${token}` }
+        const response = await api.get('/profile/me', {
+          headers: { 
+            Authorization: `Bearer ${token}` 
+          }
         });
+
         const data = await response.json();
         setIsAdmin(data.profile?.user?.isAdmin === true);
       } catch (error) {
-        console.error('Failed to check admin status:', error);
+        console.error('[CHECK] Failed to check admin status:', error);
         setIsAdmin(false);
       } finally {
         setLoading(false);
       }
     };
+
     checkAdmin();
   }, []);
 
   if (loading) {
-    return <div>Проверка прав доступа...</div>;
+    return <div>Пожалуйста, подождите немного. Выполняется проверка прав!</div>;
   }
 
   return isAdmin ? element : <Navigate to="/" replace />;
 };
 
-// Компонент для проверки прав модератора
+/**
+ * Компонент для проверки прав. Необходимое право: Модератор
+ */
 const ModeratorRoute: React.FC<{ element: React.ReactElement }> = ({ element }) => {
   const [canModerate, setCanModerate] = React.useState<boolean | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -78,14 +88,17 @@ const ModeratorRoute: React.FC<{ element: React.ReactElement }> = ({ element }) 
     const checkModerator = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('https://spectrmod.ru/api/profile/me', {
-          headers: { Authorization: `Bearer ${token}` }
+        const response = await api.get('/profile/me', {
+          headers: { 
+            Authorization: `Bearer ${token}` 
+          }
         });
+
         const data = await response.json();
         const user = data.profile?.user;
         setCanModerate(user?.isAdmin === true || user?.isModerator === true);
       } catch (error) {
-        console.error('Failed to check moderator status:', error);
+        console.error('[CHECK] Failed to check moderator status:', error);
         setCanModerate(false);
       } finally {
         setLoading(false);
@@ -95,13 +108,15 @@ const ModeratorRoute: React.FC<{ element: React.ReactElement }> = ({ element }) 
   }, []);
 
   if (loading) {
-    return <div>Проверка прав доступа...</div>;
+    return <div>Пожалуйста, подождите немного. Выполняется проверка прав!</div>;
   }
 
   return canModerate ? element : <Navigate to="/" replace />;
 };
 
-// Компонент для проверки прав рекламодателя
+/**
+ * Компонент для проверки прав. Необходимое право: Рекламодатель
+ */
 const AdvertiserRoute: React.FC<{ element: React.ReactElement }> = ({ element }) => {
   const [canAdvertise, setCanAdvertise] = React.useState<boolean | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -110,14 +125,17 @@ const AdvertiserRoute: React.FC<{ element: React.ReactElement }> = ({ element })
     const checkAdvertiser = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('https://spectrmod.ru/api/profile/me', {
-          headers: { Authorization: `Bearer ${token}` }
+        const response = await api.get('/profile/me', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         });
+
         const data = await response.json();
         const user = data.profile?.user;
         setCanAdvertise(user?.isAdmin === true || user?.isAdvertiser === true);
       } catch (error) {
-        console.error('Failed to check advertiser status:', error);
+        console.error('[CHECK] Failed to check advertiser status:', error);
         setCanAdvertise(false);
       } finally {
         setLoading(false);
@@ -127,7 +145,7 @@ const AdvertiserRoute: React.FC<{ element: React.ReactElement }> = ({ element })
   }, []);
 
   if (loading) {
-    return <div>Проверка прав доступа...</div>;
+    return <div>Пожалуйста, подождите немного. Выполняется проверка прав!</div>;
   }
 
   return canAdvertise ? element : <Navigate to="/" replace />;
@@ -161,7 +179,7 @@ export const AppRoutes = () => {
           
           {/* Админ панель */}
           <Route path="admin" element={<AdminRoute element={<AdminPanel />} />} />
-                      <Route path="admin/users" element={<AdminRoute element={<AdminUsers />} />} />
+            <Route path="admin/users" element={<AdminRoute element={<AdminUsers />} />} />
             <Route path="admin/news" element={<AdminRoute element={<AdminNews />} />} />
             <Route path="admin/moderation" element={<AdminRoute element={<AdminModeration />} />} />
             <Route path="admin/advertisement" element={<AdminRoute element={<AdminAdvertisement />} />} />

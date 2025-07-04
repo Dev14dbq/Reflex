@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { config } from '../../config/env';
+
 import { FiArrowLeft, FiMessageSquare, FiUser, FiSend, FiClock, FiSearch, FiPlus, FiShield } from 'react-icons/fi';
 import styles from './ModerationChats.module.scss';
 
@@ -65,7 +67,7 @@ export const ModerationChats: React.FC = () => {
   const fetchChats = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('https://spectrmod.ru/api/moderation/chats', {
+      const response = await fetch(config.API_URL + '/moderation/chats', {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await response.json();
@@ -80,7 +82,7 @@ export const ModerationChats: React.FC = () => {
   const fetchMessages = async (userId: string) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://spectrmod.ru/api/moderation/chats/${userId}/messages`, {
+      const response = await fetch(config.API_URL + `/moderation/chats/${userId}/messages`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await response.json();
@@ -96,7 +98,7 @@ export const ModerationChats: React.FC = () => {
     setSendingMessage(true);
     try {
       const token = localStorage.getItem('token');
-      await fetch(`https://spectrmod.ru/api/moderation/chats/${selectedChat.userId}/send`, {
+      await fetch(config.API_URL + `/moderation/chats/${selectedChat.userId}/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -131,7 +133,7 @@ export const ModerationChats: React.FC = () => {
     setSearching(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://spectrmod.ru/api/moderation/users/search?q=${encodeURIComponent(query)}`, {
+      const response = await fetch(config.API_URL + `/moderation/users/search?q=${encodeURIComponent(query)}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await response.json();
@@ -146,7 +148,7 @@ export const ModerationChats: React.FC = () => {
   const startChatWithUser = async (user: User) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('https://spectrmod.ru/api/moderation/chats/start', {
+      const response = await fetch(config.API_URL + '/moderation/chats/start', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

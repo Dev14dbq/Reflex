@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Активируем venv
-source vnev/bin/activate
+source venv/bin/activate
 
 # Устанавливаем зависимости
 pip install -r requirements.txt

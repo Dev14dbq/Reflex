@@ -12,6 +12,8 @@ import {
 } from 'react-icons/fi';
 import styles from './ModerationProfilesView.module.scss';
 
+import api from '@api';
+
 interface ProfileForModeration {
   id: string;
   preferredName: string;
@@ -69,9 +71,12 @@ export const ModerationProfilesView: React.FC = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('https://spectrmod.ru/api/moderation/profiles/next', {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await api.get('/moderation/profiles/next', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
+      
       const data = await response.json();
       
       if (data.profile) {
@@ -93,13 +98,13 @@ export const ModerationProfilesView: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await fetch(`https://spectrmod.ru/api/moderation/users/${profile.user.id}/ban`, {
-        method: 'POST',
+      await api.post(`/moderation/users/${profile.user.id}/ban`, {
+        reason: banReason
+      },{
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ reason: banReason }),
+        }
       });
       
       setShowBanModal(false);
@@ -115,13 +120,13 @@ export const ModerationProfilesView: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await fetch(`https://spectrmod.ru/api/moderation/users/${profile.user.id}/message`, {
-        method: 'POST',
+      await api.post(`/moderation/users/${profile.user.id}/message`, {
+        message: messageText
+      },{
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ message: messageText }),
+        }
       });
       
       setShowMessageModal(false);
@@ -137,13 +142,13 @@ export const ModerationProfilesView: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await fetch(`https://spectrmod.ru/api/moderation/profiles/${profile.id}/verify`, {
-        method: 'POST',
+      await api.post(`/moderation/profiles/${profile.id}/verify`, {
+        note: 'Профиль одобрен модератором'
+      },{
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ note: 'Профиль одобрен модератором' }),
+        }
       });
       
       fetchNextProfile();

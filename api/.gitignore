@@ -2,6 +2,7 @@
 node_modules
 package-lock.json
 
+<<<<<<< Updated upstream
 # Environment variables
 .env
 
@@ -20,3 +21,13 @@ yarn-error.log*
 
 # TypeScript
 dist
+=======
+# TypeScript
+dist
+
+# Env variables
+.env
+
+# Prisma
+/generated/prisma
+>>>>>>> Stashed changes

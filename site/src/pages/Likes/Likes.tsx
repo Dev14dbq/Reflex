@@ -14,6 +14,7 @@ import {
 } from "react-icons/fi";
 import { LoadingCard } from "../../components/ui";
 import { useAdvertising } from "../../hooks/useAdvertising";
+import { config } from "@env";
 
 type Profile = {
   id: string;
@@ -125,7 +126,7 @@ export const Likes: React.FC = () => {
     // Отложенное создание сокета на 500мс для стабильности
     const timeoutId = setTimeout(() => {
       // Эндпоинт лайков на сервере = /ws/likes
-      const ws = new WebSocket(`wss://spectrmod.ru/ws/likes?token=${token}`);
+      const ws = new WebSocket(`${config.WS_URL}/likes?token=${token}`);
       wsRef.current = ws;
 
       ws.onopen = () => {
@@ -291,7 +292,7 @@ export const Likes: React.FC = () => {
     const reason = complaintReason === "Другое..." ? otherReason : complaintReason;
     
     try {
-      await fetch("https://spectrmod.ru/api/complaints", {
+      await fetch(config.API_URL + "/complaints", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

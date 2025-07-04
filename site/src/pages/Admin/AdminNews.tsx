@@ -5,6 +5,8 @@ import styles from './AdminPanel.module.scss';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import api from '@api';
+
 interface News {
   id: string;
   title: string;
@@ -32,8 +34,10 @@ export const AdminNews: React.FC = () => {
   const fetchNews = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('https://spectrmod.ru/api/admin/news', {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await api.get('/admin/news', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       const data = await response.json();
       if (data && Array.isArray(data.news)) {
@@ -58,20 +62,22 @@ export const AdminNews: React.FC = () => {
     }
 
     const url = isEditing
-      ? `https://spectrmod.ru/api/admin/news/${isEditing.id}`
-      : 'https://spectrmod.ru/api/admin/news';
-    const method = isEditing ? 'PUT' : 'POST';
+      ? `/admin/news/${isEditing.id}`
+      : '/admin/news';
+    const method = isEditing ? 'put' : 'post';
 
     try {
       const token = localStorage.getItem('token');
-      await fetch(url, {
-        method,
+      await api[method](url, {
+        title: newTitle, 
+        content: newContent
+      },{
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ title: newTitle, content: newContent }),
+        }
       });
+      
       fetchNews();
       setIsEditing(null);
       setNewTitle('');
@@ -87,10 +93,12 @@ export const AdminNews: React.FC = () => {
     if (window.confirm('Вы уверены, что хотите удалить эту новость?')) {
       try {
         const token = localStorage.getItem('token');
-        await fetch(`https://spectrmod.ru/api/admin/news/${id}`, {
-          method: 'DELETE',
-          headers: { Authorization: `Bearer ${token}` }
+        await api.delete(`/admin/news/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         });
+
         fetchNews();
         toast.success('Новость удалена');
       } catch (error) {
@@ -108,9 +116,10 @@ export const AdminNews: React.FC = () => {
     setPublishing(id);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://spectrmod.ru/api/admin/news/${id}/publish`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await api.post(`/admin/news/${id}/publish`, null, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       
       if (!response.ok) {

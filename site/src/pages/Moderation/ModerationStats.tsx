@@ -12,6 +12,7 @@ import {
   FiActivity
 } from 'react-icons/fi';
 import styles from './ModerationStats.module.scss';
+import api from '@api';
 
 interface ModerationStatsData {
   complaints: {
@@ -58,9 +59,12 @@ export const ModerationStats: React.FC = () => {
   const fetchStats = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://spectrmod.ru/api/moderation/stats?range=${dateRange}`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await api.get(`/moderation/stats?range=${dateRange}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
+      
       const data = await response.json();
       setStats(data);
     } catch (error) {

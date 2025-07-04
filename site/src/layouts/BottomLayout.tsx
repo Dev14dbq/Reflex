@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { BottomNavBar } from "../components/BottomNavBar/BottomNavBar";
+import { BottomNavBar } from "@components/BottomNavBar/BottomNavBar";
 
 // Высота навбара — ты можешь замерить через ref, но пока хардкодим 80px
 const NAVBAR_HEIGHT = 80;

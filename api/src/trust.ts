@@ -1,4 +1,4 @@
-import { prisma } from "./prisma";
+import { prisma } from "./prisma.ts";
 
 // Причины изменения уровня доверия
 export enum TrustChangeReason {

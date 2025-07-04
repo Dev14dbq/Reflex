@@ -4,6 +4,8 @@ import { FiArrowLeft, FiUsers, FiActivity, FiUserCheck } from 'react-icons/fi';
 import styles from './AdminPanel.module.scss';
 import clsx from 'clsx';
 
+import api from '@api';
+
 interface AnalyticsSummary {
   totalUsers: number;
   newUsers: number;
@@ -31,9 +33,11 @@ export const AdminAnalytics: React.FC = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      // Обратите внимание, что URL был изменен на /admin/analytics
-      const response = await fetch(`https://spectrmod.ru/api/admin/analytics?range=${timeRange}`, {
-        headers: { Authorization: `Bearer ${token}` }
+
+      const response = await api.get(`/admin/analytics?range=${timeRange}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       const data = await response.json();
       if (data.summary) {

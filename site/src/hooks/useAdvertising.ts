@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useUserStore } from '../stores/user';
-import { config } from '../config/env';
+import { useUserStore } from '@stores/user';
+import { config } from '@env';
+import api from '@api';
 
 interface AdData {
   id: string;
@@ -73,7 +74,7 @@ export const useAdvertising = () => {
       }
 
       // Получаем информацию о пользователе для передачи userId
-      const userResponse = await fetch(`${config.API_URL}/me`, {
+      const userResponse = await api.get('/me', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -84,7 +85,7 @@ export const useAdvertising = () => {
       const userData = await userResponse.json();
       const userId = userData.user?.id;
 
-      const response = await fetch(`${config.API_URL}/advertising/serve?userId=${userId}`, {
+      const response = await api.get(`/advertising/serve?userId=${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -100,7 +101,9 @@ export const useAdvertising = () => {
     return null;
   }, [isInitialized, isAuthenticated, token]);
 
-  // Показать рекламу при первом входе
+  /**
+   * Показ реклаы при 1 заходе
+   */
   const showWelcomeAd = useCallback(async () => {
     // ИСПРАВЛЕНИЕ: Более строгая проверка
     if (!isInitialized || !isAuthenticated) {
@@ -142,25 +145,30 @@ export const useAdvertising = () => {
         return;
       }
 
-      // Получаем userId
-      const userResponse = await fetch('https://spectrmod.ru/api/me', {
-        headers: { 'Authorization': `Bearer ${token}` }
+      /**
+       * Получаем данные юзера
+       */
+      const userResponse = await api.get('/me', {
+        headers: { 
+          'Authorization': `Bearer ${token}` 
+        }
       });
       
       if (!userResponse.ok) return;
       const userData = await userResponse.json();
+      
       const userId = userData.user?.id;
 
-      await fetch(`${config.API_URL}/advertising/track/impression`, {
-        method: 'POST',
+      await api.post('/advertising/track/impression', {
+        body: {
+          campaignId: adId,
+          userId: userId
+        }
+      },{
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({
-          campaignId: adId,
-          userId: userId
-        })
       });
     } catch (error) {
       console.error('Ошибка трекинга показа:', error);
@@ -178,7 +186,7 @@ export const useAdvertising = () => {
       }
 
       // Получаем userId
-      const userResponse = await fetch(`${config.API_URL}/me`, {
+      const userResponse = await api.get('/me', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       

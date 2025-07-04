@@ -2,13 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiTrash2, FiArrowUp, FiArrowDown, FiPlus } from 'react-icons/fi';
 import { motion } from 'framer-motion';
-import { SlidePageTransition } from '../../components/ui/PageTransition';
-import { EditNameModal } from '../../components/profile/EditNameModal';
-import { EditAgeModal } from '../../components/profile/EditAgeModal';
-import { EditCityModal } from '../../components/profile/EditCityModal';
-import { EditGenderModal } from '../../components/profile/EditGenderModal';
-import { EditGoalsModal } from '../../components/profile/EditGoalsModal';
-import { EditDescriptionModal } from '../../components/profile/EditDescriptionModal';
+import { config } from '../../config/env';
+
+import api from '@api';
+
+import { SlidePageTransition } from '@components/ui/PageTransition';
+import { EditNameModal } from '@components/profile/EditNameModal';
+import { EditAgeModal } from '@components/profile/EditAgeModal';
+import { EditCityModal } from '@components/profile/EditCityModal';
+import { EditGenderModal } from '@components/profile/EditGenderModal';
+import { EditGoalsModal } from '@components/profile/EditGoalsModal';
+import { EditDescriptionModal } from '@components/profile/EditDescriptionModal';
 
 interface Profile {
   id: string;
@@ -41,9 +45,12 @@ export const MyProfile: React.FC = () => {
     if (!token) return;
     setLoading(true);
     try {
-      const res = await fetch('https://spectrmod.ru/api/profile/me', {
-        headers: { Authorization: `Bearer ${token}` },
+      const res = await api.get('/profile/me', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
       });
+
       const data = await res.json();
       setProfile(data.profile);
     } finally {
@@ -55,21 +62,23 @@ export const MyProfile: React.FC = () => {
 
   const updateImages = async (images: string[]) => {
     if (!token) return;
-    await fetch('https://spectrmod.ru/api/profile/update', {
-      method: 'POST',
+    await api.post('/profile/update', {
+      images
+    },
+    {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ images }),
     });
+
     await fetchProfile();
   };
 
   const updateProfile = async (data: Partial<Profile>) => {
     if (!token) return;
     try {
-      await fetch('https://spectrmod.ru/api/profile/update', {
+      await fetch(config.API_URL + '/profile/update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useReducer } from 'react';
 import { ChatList } from './ChatList';
 import { ChatDetail } from './ChatDetail';
-import { useGlobalWebSocket } from '../../hooks/useGlobalWebSocket';
+import { useGlobalWebSocket } from '@hooks/useGlobalWebSocket';
 import { Message, ChatState } from './types';
 import { FiWifiOff, FiRefreshCw, FiMessageCircle } from 'react-icons/fi';
 

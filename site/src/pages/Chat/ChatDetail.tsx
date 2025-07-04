@@ -1,11 +1,23 @@
 import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
-import { FiArrowLeft, FiSend, FiMoreVertical, FiTrash2, FiEdit3, FiCopy, FiX, FiCheckCircle, FiFlag } from 'react-icons/fi';
-import { ReadIcon } from '../../components/ui/ReadIcon';
-import { Message } from './types';
-import clsx from 'clsx';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { http } from '../../services/http';
+import {
+  FiArrowLeft, 
+  FiSend, 
+  FiMoreVertical, 
+  FiTrash2, 
+  FiEdit3, 
+  FiCopy, 
+  FiX, 
+  FiCheckCircle, 
+  FiFlag 
+} from 'react-icons/fi';
+
+import { motion, AnimatePresence } from 'framer-motion';
+import clsx from 'clsx';
+
+import { ReadIcon } from '@components/ui/ReadIcon';
+import { Message } from './types';
+import api from '@api';
 
 // Удалили хвостики у bubble, поэтому дополнительные стили не требуются
 const bubbleStyles = ``;
@@ -330,14 +342,21 @@ export const ChatDetail: React.FC<ChatDetailProps> = ({
     
     setSubmittingComplaint(true);
     try {
-      const response = await http.post('/complaints', {
+      const token = localStorage.getItem('token');
+      const response = await api.post('/complaints', {
         userId: otherUser.id,
         reason: complaintReason,
         details: complaintDetails.trim() || undefined,
         type: 'chat'
+      },{
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
+
+      const data = response.json();
       
-      console.log('[CHAT] Complaint response:', response.data);
+      console.log('[CHAT] Complaint response:', data);
       
       setShowComplaintModal(false);
       setComplaintReason('');

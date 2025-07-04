@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { EditModal } from '../ui/EditModal';
+import { EditModal } from '@components/ui/EditModal';
 
 interface EditNameModalProps {
   isOpen: boolean;
@@ -31,7 +31,7 @@ export const EditNameModal: React.FC<EditNameModalProps> = ({
     <EditModal
       isOpen={isOpen}
       onClose={onClose}
-      title="Редактировать имя"
+      title="Редактировать никнейм"
       onSave={handleSave}
       saveDisabled={!isValid}
       rules="От 2 до 16 символов"

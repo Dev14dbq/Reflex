@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FiArrowLeft, FiEye, FiMousePointer, FiTrendingUp, FiCalendar } from 'react-icons/fi';
 import styles from './CampaignAnalytics.module.scss';
+import api from '@api';
 
 interface DailyStat {
   date: string;
@@ -47,8 +48,10 @@ export const CampaignAnalytics: React.FC = () => {
   const fetchCampaignDetails = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://spectrmod.ru/api/advertising/campaigns/${campaignId}`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await api.get(`/advertising/campaigns/${campaignId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       
       if (response.ok) {
@@ -63,8 +66,10 @@ export const CampaignAnalytics: React.FC = () => {
   const fetchAnalytics = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://spectrmod.ru/api/advertising/campaigns/${campaignId}/analytics?period=${period}`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await api.get(`/advertising/campaigns/${campaignId}/analytics?period=${period}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       
       if (response.ok) {

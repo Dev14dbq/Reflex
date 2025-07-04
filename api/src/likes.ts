@@ -2,8 +2,8 @@
 import { WebSocket } from "ws";
 import { IncomingMessage } from "http";
 import jwt from "jsonwebtoken";
-import { prisma } from "./prisma";
-import { sendTG } from "./notify";
+import { prisma } from "./prisma.ts";
+import { sendTG } from "./notify.ts";
 
 export async function likesWebSocket(ws: WebSocket, req: IncomingMessage) {
   let userId: string;

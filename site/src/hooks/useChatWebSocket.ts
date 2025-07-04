@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { WSMessage, ChatEvent } from '../pages/Chat/types';
-import { config } from '../config/env';
+import { WSMessage, ChatEvent } from '@page/Chat/types';
+import { config } from '@env';
 
 interface UseChatWebSocketProps {
   token: string | null;

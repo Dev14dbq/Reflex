@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiUserCheck, FiUserX } from 'react-icons/fi';
 import styles from './AdminPanel.module.scss';
 
-
+import api from '@api';
 
 interface UserProfile {
   id: string;
@@ -36,8 +36,10 @@ export const AdminModeration: React.FC = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://spectrmod.ru/api/admin/complaints?status=${filter}`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await api.get(`/admin/complaints?status=${filter}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.json();
@@ -52,13 +54,13 @@ export const AdminModeration: React.FC = () => {
   const handleAction = async (id: string, action: 'RESOLVED' | 'REJECTED') => {
     try {
       const token = localStorage.getItem('token');
-      await fetch(`https://spectrmod.ru/api/admin/complaints/${id}/action`, {
-        method: 'POST',
+      await api.post(`/admin/complaints/${id}/action`, {
+        action
+      },{
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ action }),
       });
       fetchReports(); // Refresh list
     } catch (error) {

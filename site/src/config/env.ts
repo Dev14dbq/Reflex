@@ -10,6 +10,7 @@ export const config = {
   BASE_URL: import.meta.env.VITE_BASE_URL || 'https://spectrmod.ru',
   
   // Bot URL for redirects
+  BOT_URL: import.meta.env.VITE_BOT_URL || 'https://t.me/ReflexGay_bot?startapp',
   
   // Environment
   isDev: import.meta.env.DEV,

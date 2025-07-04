@@ -1,9 +1,12 @@
+import { FiArrowLeft, FiBell } from "react-icons/fi";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import clsx from "clsx";
-import { FiArrowLeft, FiBell } from "react-icons/fi";
-import { SlidePageTransition } from "../../components/ui/PageTransition";
+
 import styles from "./NotificationSettings.module.scss";
+import clsx from "clsx";
+
+import { SlidePageTransition } from "@components/ui/PageTransition";
+import api from '@api';
 
 interface Settings {
   id: string;
@@ -26,9 +29,8 @@ export const NotificationSettings: React.FC = () => {
     if (!token) return;
     setLoading(true);
     try {
-      const res = await fetch("https://spectrmod.ru/api/settings", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.get('/settings', { headers: { Authorization: `Bearer ${token}` } });
+      
       const data = await res.json();
       setSettings(data.settings);
     } catch (err) {
@@ -41,11 +43,8 @@ export const NotificationSettings: React.FC = () => {
   const updateSettings = async (patch: Partial<Settings>) => {
     if (!token) return;
     try {
-      const res = await fetch("https://spectrmod.ru/api/settings", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify(patch),
-      });
+      const res = await api.put('/settings', patch, { headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` } });
+      
       const data = await res.json();
       setSettings(data.settings);
     } catch (err) {

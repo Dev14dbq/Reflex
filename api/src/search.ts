@@ -2,16 +2,24 @@
 import { WebSocket } from "ws";
 import { IncomingMessage } from "http";
 import jwt from "jsonwebtoken";
-import { prisma } from "./prisma";
-import { checkMassLikes } from "./trust";
+import { prisma } from "./prisma.ts";
+import { checkMassLikes } from "./trust.ts";
 import { spawn } from "child_process";
 import path from "path";
+import { fileURLToPath } from "url";
 
 // Функция для ранжирования профилей с помощью ML модели
 async function rankProfiles(profiles: any[], user: any): Promise<any[]> {
   return new Promise((resolve, reject) => {
     // Используем Python из venv
-    const pythonPath = path.join(__dirname, "../ml-models/vnev/bin/python3");
+
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+
+    const isWin = process.platform === "win32";
+    const pythonPath = isWin
+      ? path.join(__dirname, "..", "ml-models", "venv", "Scripts", "python.exe")
+      : path.join(__dirname, "../ml-models/vnev/bin/python3");
     const scriptPath = path.join(__dirname, "../ml-models/rank_profiles.py");
     
     const py = spawn(pythonPath, [scriptPath]);
@@ -65,6 +73,7 @@ export async function startWebSocketServer(ws: WebSocket, req: IncomingMessage) 
     }
 
     const payload = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    console.log(payload)
     userId = payload.userId;
   } catch (err) {
     console.warn("[WS] ❌ Invalid token", err);
@@ -256,6 +265,7 @@ export async function startWebSocketServer(ws: WebSocket, req: IncomingMessage) 
 
       const enriched = {
         id: profile.id,
+        userId: profile.userId,
         preferredName: profile.preferredName,
         description: profile.description,
         city: profile.city,
@@ -267,6 +277,9 @@ export async function startWebSocketServer(ws: WebSocket, req: IncomingMessage) 
         user: { username: profile.user.username },
         trustScore: profile.user.trustScore || 40,
       };
+
+      console.log(enriched)
+
 
       if (ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({ type: "recommendation", profile: enriched }));

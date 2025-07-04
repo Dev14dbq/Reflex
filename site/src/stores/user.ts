@@ -17,7 +17,7 @@ interface UserStore {
   token: string | null;
   isAuthenticated: boolean;
   isInitialized: boolean;
-  hasProfile: boolean | null; // null = не проверено, true = есть, false = нет
+  hasProfile: boolean | null;
   setUser: (u: User) => void;
   setToken: (t: string | null) => void;
   setInitialized: (initialized: boolean) => void;

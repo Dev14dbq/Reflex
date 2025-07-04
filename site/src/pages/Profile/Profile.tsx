@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FiChevronLeft } from 'react-icons/fi';
-import { useAdvertising } from '../../hooks/useAdvertising';
+import { useAdvertising } from '@hooks/useAdvertising';
+
+import api from '@api';
 
 interface Profile {
   id: string;
@@ -32,7 +34,10 @@ export const ProfileView: React.FC = () => {
     const fetchProfile = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`https://spectrmod.ru/api/profile/${profileId}`, { signal: controller.signal });
+        const res = await api.get(`/profile/${profileId}`, {
+          signal: controller.signal
+        });
+
         if (!res.ok) throw new Error('Profile not found');
         const data = await res.json();
         setProfile(data.profile);

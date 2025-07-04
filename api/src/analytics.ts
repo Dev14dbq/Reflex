@@ -1,7 +1,7 @@
 // src/analytics.ts - API для расширенной аналитики и отчетности
 import { Router, Response } from "express";
-import { prisma } from "./prisma";
-import { authMiddleware } from "./middleware/auth";
+import { prisma } from "./prisma.ts";
+import { authMiddleware } from "./middleware/auth.ts";
 
 const router = Router();
 

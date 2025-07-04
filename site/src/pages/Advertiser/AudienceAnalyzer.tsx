@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiUsers, FiSearch, FiFilter } from 'react-icons/fi';
 import styles from './AudienceAnalyzer.module.scss';
+import api from '@api';
 
 interface AudienceFilter {
   ageMin: number;
@@ -46,8 +47,10 @@ export const AudienceAnalyzer: React.FC = () => {
         filters.goals.forEach(goal => params.append('goals', goal));
       }
 
-      const response = await fetch(`https://spectrmod.ru/api/advertising/targeting/audience?${params}`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await api.get(`/advertising/targeting/audience?${params}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       
       const data = await response.json();

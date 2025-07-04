@@ -7,6 +7,7 @@ import {
   
 } from 'react-icons/fi';
 import styles from './AdvertiserPanel.module.scss';
+import api from '@api';
 
 interface Stats {
   totalCampaigns: number;
@@ -36,9 +37,12 @@ export const AdvertiserPanel: React.FC = () => {
   const fetchStats = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('https://spectrmod.ru/api/advertising/stats', {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await api.get('/advertising/stats', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
+      
       const data = await response.json();
       
       setStats(data);

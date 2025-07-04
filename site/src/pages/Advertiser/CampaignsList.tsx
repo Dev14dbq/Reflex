@@ -12,6 +12,8 @@ import {
 } from 'react-icons/fi';
 import styles from './CampaignsList.module.scss';
 
+import api from '@api';
+
 interface Campaign {
   id: string;
   title: string;
@@ -42,8 +44,10 @@ export const CampaignsList: React.FC = () => {
   const fetchCampaign = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://spectrmod.ru/api/advertising/campaigns`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await api.get(`/advertising/campaigns`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       
       const data = await response.json();
@@ -61,13 +65,13 @@ export const CampaignsList: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://spectrmod.ru/api/advertising/campaigns/${campaign.id}/status`, {
-        method: 'POST',
+      const response = await api.post(`/api/advertising/campaigns/${campaign.id}/status`, {
+        action
+      },{
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ action })
+        }
       });
 
       if (response.ok) {

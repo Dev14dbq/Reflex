@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { EditModal } from '../ui/EditModal';
-import { useCitySearch } from '../../hooks/useCitySearch';
+import { EditModal } from '@components/ui/EditModal';
+import { useCitySearch } from '@hooks/useCitySearch';
 
 interface CityOption {
   value: string;

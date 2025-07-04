@@ -1,15 +1,16 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { BottomLayout } from "./BottomLayout";
-import axios from "axios";
-import { ErrorCard, AdCard, BannedScreen } from "../components/ui";
-import { useUserStore } from "../stores/user";
-import { useGlobalWebSocket } from "../hooks/useGlobalWebSocket";
-import { useAdvertising } from "../hooks/useAdvertising";
-import { apiService } from "../services/api";
-import { config } from "../config/env";
 
-import { CityMigration } from "../pages/CityMigration/CityMigration";
+import { CityMigration } from "@page/CityMigration/CityMigration";
+import { ErrorCard, AdCard, BannedScreen } from "@components/ui";
+import { useGlobalWebSocket } from "@hooks/useGlobalWebSocket";
+import { useAdvertising } from "@hooks/useAdvertising";
+import { BottomLayout } from "./BottomLayout";
+import { useUserStore } from "@stores/user";
+
+import { config } from "@env";
+import api from '@api';
 
 interface MainLayoutProps {
   children?: React.ReactNode;
@@ -57,7 +58,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     });
   }, [isInitialized, user, token, hasProfile, loading, noProfile, location.pathname]);
 
-  // Инициализируем Telegram WebApp SDK один раз
+  /**
+   * Инициализация Telegram WebApp SDK
+   */
   useEffect(() => {
     if ((window as any).Telegram?.WebApp) {
       (window as any).Telegram.WebApp.ready?.();
@@ -80,8 +83,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       }
 
       try {
-        const response = await apiService.get("/me", {
-          headers: { Authorization: `Bearer ${storedToken}` },
+        const response = await api.get("/me", {
+          headers: {
+            Authorization: `Bearer ${storedToken}`
+          },
         });
 
         if (response.ok) {
@@ -90,8 +95,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           setToken(storedToken);
           
           // Проверяем есть ли профиль
-          const profileResponse = await apiService.get("/profile/me", {
-            headers: { Authorization: `Bearer ${storedToken}` },
+          const profileResponse = await api.get("/profile/me", {
+            headers: {
+              Authorization: `Bearer ${storedToken}`
+            },
           });
           
           console.log('[Init] Проверка профиля:', {
@@ -171,8 +178,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const verifyProfile = async (token: string, retry = false) => {
     try {
       console.log('[VerifyProfile] 🔍 Проверяем профиль...', { retry });
-      const res = await axios.get(`${config.API_URL}/profile/me`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const res: any = await api.get(`/profile/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
       });
 
       if (!res.data?.profile) {

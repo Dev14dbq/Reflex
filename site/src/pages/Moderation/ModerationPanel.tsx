@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
- 
   FiMessageSquare, 
   FiUsers, 
   FiImage, 
   FiBarChart, 
   FiFileText, 
   FiAlertTriangle,
-
   FiArrowLeft
 } from 'react-icons/fi';
 import styles from './ModerationPanel.module.scss';
+import api from '@api';
 
 interface ModerationStats {
   pendingComplaints: number;
@@ -32,9 +31,12 @@ export const ModerationPanel: React.FC = () => {
   const fetchStats = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('https://spectrmod.ru/api/moderation/stats', {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await api.get('/moderation/stats', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
+      
       const data = await response.json();
       setStats(data);
     } catch (error) {

@@ -1,94 +1,104 @@
 import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 
-import axios from "axios";
 import { FiRefreshCw, FiMapPin } from "react-icons/fi";
-import { ErrorCard } from "../../components/ui";
-import { useUserStore } from "../../stores/user";
+import { useUserStore } from "@stores/user";
+import { ErrorCard } from "@components/ui";
+import api from "@api";
 
 type StatsResponse = {
-  likesSent: number;
-  dislikesSent: number;
-  sentLikePercent: number | null;
-  likeCoefficient: number | null;
-  matches: number;
-  rejectedLikes: number;
+    likesSent: number;
+    dislikesSent: number;
+    sentLikePercent: number | null;
+    likeCoefficient: number | null;
+    matches: number;
+    rejectedLikes: number;
 };
 
 type Profile = {
-  id: string;
-  preferredName: string;
-  description: string;
-  city: string;
-  goals: string[];
-  birthYear: string;
-  user: { username: string };
-  images?: string[];
+    id: string;
+    preferredName: string;
+    description: string;
+    city: string;
+    goals: string[];
+    birthYear: string;
+    user: { username: string };
+    images?: string[];
 };
 
 export const App: React.FC<{ className?: string }> = ({ className }) => {
-  const { user, isInitialized, isAuthenticated, token } = useUserStore();
+    const { user, isInitialized, isAuthenticated, token } = useUserStore();
 
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [stats, setStats] = useState<StatsResponse | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [, setError] = useState<string | null>(null);
+    const [stats, setStats] = useState<StatsResponse | null>(null);
+    const [profile, setProfile] = useState<Profile | null>(null);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [, setError] = useState<string | null>(null); // TODO: Сделать отображение ошибки через телеграм сообщение 
 
-  // Загружаем статистику при первом рендере
-  useEffect(() => {
-    const loadData = async () => {
-      // ИСПРАВЛЕНИЕ: Более строгая проверка - должна быть авторизация
-      if (!isInitialized || !isAuthenticated) {
-        console.log('[App] Авторизация не завершена, пропускаем загрузку данных');
-        return;
-      }
+    /**
+     * Создание запроса на получение статистики и данных при 1 заходе
+     */
+    useEffect(() => {
+        const loadData = async () => {
+            if (!isInitialized || !isAuthenticated) {
+              return console.log('[App] Авторизация не завершена! Пропускаем загрузку данных');
+            }
 
-      try {
-        const [statsRes, profileRes] = await Promise.all([
-          axios.get<StatsResponse>("https://spectrmod.ru/api/stats/me", {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          axios.get<{ profile: Profile }>("https://spectrmod.ru/api/profile/me", {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-        ]);
-        
-        setStats(statsRes.data);
-        setProfile(profileRes.data.profile);
-      } catch (err) {
-        console.error("Failed to fetch stats", err);
-        setError("Не удалось получить статистику");
-      }
+            try {
+                const apiStats = await api.get("/stats/me", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                });
+
+                const apiProfile = await api.get("/profile/me", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                });
+
+                const dataStats = await apiStats.json();
+                const dataProfile = await apiProfile.json();
+
+                setStats(dataStats); setProfile(dataProfile.profile);
+            } catch (error) {
+                console.error(error);
+                setError("[API] Не удалось получить данные профиля! Попробуйте зайти позже");
+            }
+        };
+
+        loadData();
+    }, [isInitialized, isAuthenticated, token]);
+
+    const refreshData = async () => {
+        setIsRefreshing(true);
+
+        if (isAuthenticated && token) {
+            try {
+                const res = await api.get("/me", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                });
+
+                const data = await res.json();
+                useUserStore.getState().setUser(data.user);
+
+                const statsRes: any = await api.get("/stats/me", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                });
+
+                const statData = await statsRes.json();
+                setStats(statData.data);
+            } catch (err) {
+                console.error("Failed to refresh data", err);
+                setError("Ошибка обновления данных");
+            }
+        }
+
+        setTimeout(() => setIsRefreshing(false), 1000);
     };
-
-    loadData();
-  }, [isInitialized, isAuthenticated, token]);
-
-  const refreshData = async () => {
-    setIsRefreshing(true);
-
-    // ИСПРАВЛЕНИЕ: Используем isAuthenticated вместо token
-    if (isAuthenticated && token) {
-      try {
-        const res = await axios.get("https://spectrmod.ru/api/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        useUserStore.getState().setUser(res.data.user);
-        setError(null);
-
-        // Обновляем статистику
-        const statsRes = await axios.get<StatsResponse>("https://spectrmod.ru/api/stats/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setStats(statsRes.data);
-      } catch (err) {
-        console.error("Failed to refresh data", err);
-        setError("Ошибка обновления данных");
-      }
-    }
-
-    setTimeout(() => setIsRefreshing(false), 1000);
-  };
 
   if (!isInitialized) {
     return (
@@ -140,7 +150,7 @@ export const App: React.FC<{ className?: string }> = ({ className }) => {
           </button>
           <div className="neu-card text-center mb-6">
             <div className="neu-gradient-primary p-6 rounded-neu-lg mb-4">
-              <h1 className="text-3xl font-bold text-white mb-2 neu-animate-float">Reflex</h1>
+              <h1 className="text-3xl font-bold text-white mb-2">Reflex</h1>
               <p className="text-white/80 text-sm">Современная платформа знакомств</p>
             </div>
           </div>

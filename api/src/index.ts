@@ -5,21 +5,21 @@ import dotenv from "dotenv";
 import cors from "cors";
 import path from "path";
 
-import { authRouter } from "./auth";
-import { userRouter } from "./user";
-import { profileRouter } from "./profile";
-import { statsRouter } from "./stats";
-import { settingsRouter } from "./settings";
-import { locationRouter } from "./location";
-import { nsfwRouter, initializeNsfwModel } from "./nsfw";
-import { adminRouter } from "./admin";
-import { moderationRouter } from "./moderation";
-import { advertisingRouter } from "./advertising";
-import { analyticsRouter } from "./analytics";
+import { authRouter } from "./auth.ts";
+import { userRouter } from "./user.ts";
+import { profileRouter } from "./profile.ts";
+import { statsRouter } from "./stats.ts";
+import { settingsRouter } from "./settings.ts";
+import { locationRouter } from "./location.ts";
+import { nsfwRouter, initializeNsfwModel } from "./nsfw.ts";
+import { adminRouter } from "./admin.ts";
+import { moderationRouter } from "./moderation.ts";
+import { advertisingRouter } from "./advertising.ts";
+import { analyticsRouter } from "./analytics.ts";
 
-import { startWebSocketServer as startSearchWebSocket } from "./search";
-import { likesWebSocket } from "./likes";
-import { chatWebSocket } from "./chat";
+import { startWebSocketServer as startSearchWebSocket } from "./search.ts";
+import { likesWebSocket } from "./likes.ts";
+import { chatWebSocket } from "./chat.ts";
 
 dotenv.config();
 

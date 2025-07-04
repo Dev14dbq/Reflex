@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiUserCheck, FiUserX, FiMessageSquare, FiEye, FiUser, FiFlag } from 'react-icons/fi';
 import styles from './ModerationComplaints.module.scss';
+import api from '@api';
 
 interface User {
   id: string;
@@ -38,8 +39,10 @@ export const ModerationComplaints: React.FC = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://spectrmod.ru/api/moderation/complaints?status=${filter}`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await api.get(`/moderation/complaints?status=${filter}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       const data = await response.json();
       setComplaints(data.complaints || []);
@@ -53,17 +56,16 @@ export const ModerationComplaints: React.FC = () => {
   const handleComplaintAction = async (id: string, action: 'resolved' | 'dismissed') => {
     try {
       const token = localStorage.getItem('token');
-      await fetch(`https://spectrmod.ru/api/moderation/complaints/${id}/action`, {
-        method: 'POST',
+      await api.post(`/moderation/complaints/${id}/action`, {
+        action, 
+        moderatorNote: moderatorNote || `Жалоба ${action === 'resolved' ? 'принята' : 'отклонена'} модератором`
+      },{
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ 
-          action, 
-          moderatorNote: moderatorNote || `Жалоба ${action === 'resolved' ? 'принята' : 'отклонена'} модератором`
-        }),
+        }
       });
+
       fetchComplaints();
       setSelectedComplaint(null);
       setModeratorNote('');
@@ -80,14 +82,15 @@ export const ModerationComplaints: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await fetch(`https://spectrmod.ru/api/moderation/users/${userId}/message`, {
-        method: 'POST',
+      await api.post(`/moderation/users/${userId}/message`, {
+        message: moderatorNote
+      },{
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ message: moderatorNote }),
+        }
       });
+
       alert('Предупреждение отправлено');
       setModeratorNote('');
     } catch (error) {

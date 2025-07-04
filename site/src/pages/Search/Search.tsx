@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useSwipeable } from "react-swipeable";
+
+import { config } from '@env';
+import api from "@api";
 import { 
   FiMapPin, 
   FiHeart, 
@@ -10,11 +13,12 @@ import {
   FiAlertCircle,
 
 } from "react-icons/fi";
-import { LoadingCard, ErrorCard } from "../../components/ui";
-import { useAdvertising } from "../../hooks/useAdvertising";
+import { LoadingCard, ErrorCard } from "@components/ui";
+import { useAdvertising } from "@hooks/useAdvertising";
 
 type Profile = {
   id: string;
+  userId: string;
   preferredName: string;
   description: string;
   city: string;
@@ -28,7 +32,7 @@ const COMPLAINT_REASONS = [
   "Спам",
   "Нецензурная лексика", 
   "Неподходящие фото",
-  "Другое..."
+  "Другая причина"
 ];
 
 export const Search: React.FC = () => {
@@ -79,7 +83,7 @@ export const Search: React.FC = () => {
       case 'technical':
         return {
           title: 'Техническая ошибка',
-          description: 'Что-то пошло не так на нашей стороне. Попробуйте позже',
+          description: 'Что-то пошло не так на нашей стороне. Пожалуйста опробуйте позже!',
           retryText: 'Повторить',
         } as const;
       default:
@@ -150,7 +154,7 @@ export const Search: React.FC = () => {
     // Отложенное создание сокета на 500мс для стабильности
     const timeoutId = setTimeout(() => {
     
-    const ws = new WebSocket(`wss://spectrmod.ru/ws/search?token=${token}`);
+    const ws = new WebSocket(`${config.WS_URL}/search?token=${token}`);
     wsRef.current = ws;
 
     ws.onopen = () => {
@@ -321,22 +325,18 @@ export const Search: React.FC = () => {
     console.log('[SEARCH] Submitting complaint:', { userId: profile?.id, reason, type: 'search' });
     
     try {
-      const response = await fetch("https://spectrmod.ru/api/complaints", {
-        method: "POST",
+      const token = localStorage.getItem('token');
+      const response = await api.post('/complaints', {
+        userId: profile?.userId,
+        reason: complaintReason,
+        type: 'search'
+      },{
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ 
-          userId: profile?.id, 
-          reason,
-          type: 'search'
-        })
+        }
       });
       
-      console.log('[SEARCH] Response status:', response.status);
       const data = await response.json();
-      console.log('[SEARCH] Response data:', data);
       
       if (response.ok) {
         alert('Жалоба отправлена. Модераторы рассмотрят её в ближайшее время.');
@@ -344,7 +344,7 @@ export const Search: React.FC = () => {
         throw new Error(data.error || 'Failed to submit complaint');
       }
     } catch (error) {
-      console.error('[SEARCH] Error submitting complaint:', error);
+      console.error(profile);
       alert('Ошибка при отправке жалобы. Попробуйте ещё раз.');
     }
     
@@ -444,7 +444,7 @@ export const Search: React.FC = () => {
 
       return (
       <div 
-        className="h-[calc(100vh-80px)] overflow-y-auto bg-neu-bg-primary transition-all duration-200"
+        className="overflow-y-auto bg-neu-bg-primary transition-all duration-200"
         style={{
           backgroundColor: getPageBackground() || undefined
         }}

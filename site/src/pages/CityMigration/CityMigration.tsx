@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FiMapPin, FiCheckCircle, FiAlertCircle, FiArrowRight } from 'react-icons/fi';
-import { useCitySearch } from '../../hooks/useCitySearch';
+import { useCitySearch } from '@hooks/useCitySearch';
+
+import api from '@api';
 
 interface CityOption {
   value: string;
@@ -25,7 +27,7 @@ export const CityMigration: React.FC = () => {
   useEffect(() => {
     const fetchCurrentCity = async () => {
       try {
-        const response = await fetch('https://spectrmod.ru/api/profile/me', {
+        const response = await api.get('/profile/me', {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -130,15 +132,13 @@ export const CityMigration: React.FC = () => {
     
     setMigrating(true);
     try {
-      const response = await fetch('https://spectrmod.ru/api/profile/update', {
-        method: 'POST',
+      const response = await api.post('/profile/update', {
+        city: newCity.trim()
+      },{
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          city: newCity.trim()
-        })
+        }
       });
 
       if (response.ok) {

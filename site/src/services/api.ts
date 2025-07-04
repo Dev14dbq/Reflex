@@ -1,6 +1,5 @@
 import { config } from '../config/env';
 
-// API Configuration Service
 class ApiService {
   private baseUrl: string;
 
@@ -8,23 +7,34 @@ class ApiService {
     this.baseUrl = config.API_URL;
   }
 
-  // Получить полный URL для endpoint
-  getUrl(endpoint: string): string {
-    // Убираем начальный слеш если есть
+  /**
+   * Формирует полный URL для API-запроса на основе базового адреса и переданного endpoint.
+   *
+   * @param endpoint - относительный путь до нужного ресурса (например, '/me')
+   * @returns Строка с абсолютным URL для запроса к API
+   */
+  public getUrl(endpoint: string): string {
     const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
     return `${this.baseUrl}/${cleanEndpoint}`;
   }
 
-  // Универсальный метод для API запросов
-  async request(endpoint: string, options: RequestInit = {}): Promise<Response> {
+  /**
+   * Универсальный метод для отправки HTTP-запросов к API.
+   *
+   * @param endpoint - Относительный путь до ресурса (например, '/me' или 'profile/update').
+   * @param options - Опциональные параметры запроса (метод, заголовки, тело и т.д.), совместимые с fetch API.
+   * @returns Promise<Response> объект ответа fetch, который можно обработать (например, .json()).
+   */
+  public async request(endpoint: string, options: RequestInit = {}): Promise<Response> {
     const url = this.getUrl(endpoint);
     
-    // Добавляем заголовки по умолчанию
     const defaultHeaders: HeadersInit = {
       'Content-Type': 'application/json',
     };
 
-    // Получаем токен из localStorage если есть
+    /**
+     * Получение токена из локального хранилища и использования при его наличии
+     */
     const initDataUnsafe = localStorage.getItem('initDataUnsafe');
     if (initDataUnsafe) {
       defaultHeaders['Authorization'] = `Bearer ${initDataUnsafe}`;
@@ -40,9 +50,11 @@ class ApiService {
 
     const response = await fetch(url, config);
     
-    // Логируем запросы в режиме разработки
+    /**
+     * Логирование запросов (Если активен режим Разработки)
+     */
     if (import.meta.env.DEV) {
-      console.log(`[API] ${options.method || 'GET'} ${url}`, {
+      console.log(`[API] ${options.method || 'GET'} - ${url}`, {
         status: response.status,
         config,
       });
@@ -51,58 +63,85 @@ class ApiService {
     return response;
   }
 
-  // Удобные методы для разных типов запросов
-  async get(endpoint: string, options: RequestInit = {}) {
+  /**
+   * Использование метода GET для запросов.
+   *
+   * @param endpoint - Относительный путь до ресурса (например, '/me' или 'profile/update').
+   * @param options - Опциональные параметры запроса (заголовки и т.д.), совместимые с fetch API.
+   * @returns Promise<Response> объект ответа fetch, который можно обработать (например, .json()).
+   */
+  public async get(endpoint: string, options: RequestInit = {}) {
     return this.request(endpoint, { ...options, method: 'GET' });
   }
 
-  async post(endpoint: string, data?: any, options: RequestInit = {}) {
+  /**
+   * Использование метода POST для запросов.
+   *
+   * @param endpoint - Относительный путь до ресурса (например, '/me' или 'profile/update').
+   * @param data - Опциональный параметр запроса (тело).
+   * @param options - Опциональные параметры запроса (заголовки и т.д.), совместимые с fetch API.
+   * @returns Promise<Response> объект ответа fetch, который можно обработать (например, .json()).
+   */
+  public async post(endpoint: string, body?: any | null, options: RequestInit = {}) {
     return this.request(endpoint, {
       ...options,
       method: 'POST',
-      body: data ? JSON.stringify(data) : undefined,
+      body: body ? JSON.stringify(body) : undefined,
     });
   }
 
-  async put(endpoint: string, data?: any, options: RequestInit = {}) {
+  /**
+   * Использование метода PUT для запросов.
+   *
+   * @param endpoint - Относительный путь до ресурса (например, '/me' или 'profile/update').
+   * @param data - Опциональный параметр запроса (тело).
+   * @param options - Опциональные параметры запроса (заголовки и т.д.), совместимые с fetch API.
+   * @returns Promise<Response> объект ответа fetch, который можно обработать (например, .json()).
+   */
+  public async put(endpoint: string, body?: any, options: RequestInit = {}) {
     return this.request(endpoint, {
       ...options,
       method: 'PUT',
-      body: data ? JSON.stringify(data) : undefined,
+      body: body ? JSON.stringify(body) : undefined,
     });
   }
 
-  async patch(endpoint: string, data?: any, options: RequestInit = {}) {
+  /**
+   * Использование метода PATCH для запросов.
+   *
+   * @param endpoint - Относительный путь до ресурса (например, '/me' или 'profile/update').
+   * @param data - Опциональный параметр запроса (тело).
+   * @param options - Опциональные параметры запроса (заголовки и т.д.), совместимые с fetch API.
+   * @returns Promise<Response> объект ответа fetch, который можно обработать (например, .json()).
+   */
+  public async patch(endpoint: string, body?: any, options: RequestInit = {}) {
     return this.request(endpoint, {
       ...options,
       method: 'PATCH',
-      body: data ? JSON.stringify(data) : undefined,
+      body: body ? JSON.stringify(body) : undefined,
     });
   }
 
-  async delete(endpoint: string, options: RequestInit = {}) {
+  /**
+   * Использование метода DELETE для запросов.
+   *
+   * @param endpoint - Относительный путь до ресурса (например, '/me' или 'profile/update').
+   * @param options - Опциональные параметры запроса (заголовки и т.д.), совместимые с fetch API.
+   * @returns Promise<Response> объект ответа fetch, который можно обработать (например, .json()).
+   */
+  public async delete(endpoint: string, options: RequestInit = {}) {
     return this.request(endpoint, { ...options, method: 'DELETE' });
   }
 
-  // Получить текущий базовый URL (для отладки)
-  getBaseUrl(): string {
+  /**
+   * @returns Возращение базового API URL (Используется для отладки)
+   */
+  public getBaseUrl(): string {
     return this.baseUrl;
-  }
-
-  // Проверить доступность API
-  async healthCheck(): Promise<boolean> {
-    try {
-      const response = await this.get('/health');
-      return response.ok;
-    } catch (error) {
-      console.warn('[API] Health check failed:', error);
-      return false;
-    }
   }
 }
 
-// Создаем единственный экземпляр
-export const apiService = new ApiService();
-
-// Экспортируем также класс для тестов
-export default ApiService; 
+/**
+ * Создание единственного экземпляра класса ApiService
+ */
+export default new ApiService(); 

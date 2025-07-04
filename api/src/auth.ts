@@ -1,10 +1,9 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken";
-import { prisma } from "./prisma";
-import { validateInitData } from "./validate";
+import { prisma } from "./prisma.ts";
+import { validateInitData } from "./validate.ts";
 
 const authRouter = Router();
-const JWT_SECRET = process.env.JWT_SECRET!;
 
 authRouter.post("/auth/by-initdata", async (req, res): Promise<void> => {
   try {
@@ -82,7 +81,7 @@ authRouter.post("/auth/by-initdata", async (req, res): Promise<void> => {
       }
     }
 
-    const token = jwt.sign({ userId: dbUser.id }, JWT_SECRET, { expiresIn: "30d" });
+    const token = jwt.sign({ userId: dbUser.id }, process.env.JWT_SECRET!, { expiresIn: "30d" });
 
     res.json({
       user: {

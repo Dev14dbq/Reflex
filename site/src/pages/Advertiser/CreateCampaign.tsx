@@ -23,6 +23,8 @@ interface CampaignForm {
   endDate: string;
 }
 
+import api from '@api';
+
 export const CreateCampaign: React.FC = () => {
   const navigate = useNavigate();
   
@@ -55,16 +57,14 @@ export const CreateCampaign: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('https://spectrmod.ru/api/advertising/campaigns', {
-        method: 'POST',
+      const response = await api.post('/advertising/campaigns', {
+        ...form,
+        priority: 3 // Фиксированный приоритет
+      },{
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          ...form,
-          priority: 3 // Фиксированный приоритет
-        })
+        }
       });
 
       if (response.ok) {

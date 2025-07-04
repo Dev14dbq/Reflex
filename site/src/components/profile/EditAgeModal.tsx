@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { EditModal } from '../ui/EditModal';
+import { EditModal } from '@components/ui/EditModal';
 
 interface EditAgeModalProps {
   isOpen: boolean;

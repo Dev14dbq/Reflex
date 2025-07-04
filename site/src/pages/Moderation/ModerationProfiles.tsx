@@ -12,6 +12,7 @@ import {
 
 } from 'react-icons/fi';
 import styles from './ModerationProfiles.module.scss';
+import api from '@api';
 
 interface ProfileForModeration {
   id: string;
@@ -57,9 +58,12 @@ export const ModerationProfiles: React.FC = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://spectrmod.ru/api/moderation/profiles?status=${filter}`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await api.get(`/moderation/profiles?status=${filter}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
+      
       const data = await response.json();
       setProfiles(data.profiles || []);
     } catch (error) {
@@ -72,14 +76,15 @@ export const ModerationProfiles: React.FC = () => {
   const handleVerifyProfile = async (profileId: string) => {
     try {
       const token = localStorage.getItem('token');
-      await fetch(`https://spectrmod.ru/api/moderation/profiles/${profileId}/verify`, {
-        method: 'POST',
+      await api.post(`/moderation/profiles/${profileId}/verify`, {
+        note: moderationNote || 'Профиль верифицирован модератором'
+      },{
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ note: moderationNote || 'Профиль верифицирован модератором' }),
+        }
       });
+
       fetchProfiles();
       setSelectedProfile(null);
       setModerationNote('');
@@ -91,14 +96,15 @@ export const ModerationProfiles: React.FC = () => {
   const handleFlagProfile = async (profileId: string, reason: string) => {
     try {
       const token = localStorage.getItem('token');
-      await fetch(`https://spectrmod.ru/api/moderation/profiles/${profileId}/flag`, {
-        method: 'POST',
+      await api.post(`/api/moderation/profiles/${profileId}/flag`, {
+        reason, note: moderationNote
+      },{
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ reason, note: moderationNote }),
+        }
       });
+      
       fetchProfiles();
       setSelectedProfile(null);
       setModerationNote('');

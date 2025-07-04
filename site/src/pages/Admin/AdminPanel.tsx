@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { FiUsers, FiMessageSquare, FiAlertCircle, FiBarChart2, FiArrowLeft, FiTarget } from 'react-icons/fi';
 import styles from './AdminPanel.module.scss';
 
+import api from '@api'; 
+
 interface AdminAnalyticsSummary {
   totalUsers: number;
   activeUsers: number;
@@ -19,8 +21,10 @@ export const AdminPanel: React.FC = () => {
     const fetchAnalytics = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('https://spectrmod.ru/api/admin/analytics', {
-          headers: { Authorization: `Bearer ${token}` }
+        const response = await api.get('/admin/analytics', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         });
         if (!response.ok) throw new Error('Failed to fetch');
         const data = await response.json();

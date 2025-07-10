@@ -2,7 +2,7 @@ import { FiArrowLeft, FiBell } from "react-icons/fi";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import styles from "./NotificationSettings.module.scss";
+import styles from "./scss/Notification.module.scss";
 import clsx from "clsx";
 
 import { SlidePageTransition } from "@components/ui/PageTransition";
@@ -156,3 +156,5 @@ const ToggleRow: React.FC<{
     </div>
   );
 }; 
+
+export default NotificationSettings

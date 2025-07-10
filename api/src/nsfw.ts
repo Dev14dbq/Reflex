@@ -2,8 +2,8 @@ import { Router } from "express";
 import { authMiddleware } from "./middleware/auth.ts";
 import { prisma } from "./prisma.ts";
 // Импортируем TensorFlow и nsfwjs
-//import tf from '@tensorflow/tfjs-node';
-import nsfwjs from 'nsfwjs'; const tf = 2;
+import tf from '@tensorflow/tfjs-node';
+import nsfwjs from 'nsfwjs';
 import axios from 'axios';
 import sharp from 'sharp';
 

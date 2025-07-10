@@ -87,7 +87,7 @@ const sendRPC = (action: string, params?: any): Promise<any> => {
           pendingRequests.delete(id);
           pending.reject(new Error('Таймаут запроса'));
         }
-      }, 10000)
+      }, 20000) // 20 Секунд
     });
 
     wsRef.send(JSON.stringify(message));
@@ -179,10 +179,7 @@ const connectWebSocket = (token: string) => {
         }
 
         // Обработка pong
-        if (message.event === 'pong') {
-          console.log('[Global WS] 💓 Pong получен');
-          return;
-        }
+        if (message.event === 'pong') return;
 
         // Обработка RPC ответов
         if (message.id && pendingRequests.has(message.id)) {
@@ -315,7 +312,7 @@ export const useGlobalWebSocket = () => {
       
       return () => clearTimeout(timeoutId);
     } else if (!token) {
-      console.log('[Global WS] 🚫 Токен отсутствует, отключаемся');
+      console.log('[Global WS] Токен для аутентификации отсутствуют. Выполняю отключение!');
       disconnectWebSocket();
     }
   }, [token, isTokenReady]);

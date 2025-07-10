@@ -6,7 +6,7 @@ import { Slider } from '@mui/material';
 import clsx from 'clsx';
 
 import { SlidePageTransition } from '@components/ui/PageTransition';
-import styles from './RecommendationSettings.module.scss';
+import styles from './scss/Recommendation.module.scss';
 import api from '@api';
 
 interface RecommendationSettingsData {
@@ -235,3 +235,5 @@ export const RecommendationSettings: React.FC = () => {
     </SlidePageTransition>
   );
 };
+
+export default RecommendationSettings

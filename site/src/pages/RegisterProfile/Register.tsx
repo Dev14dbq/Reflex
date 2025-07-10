@@ -19,7 +19,7 @@ import {
 
 import { PageTransition } from "@components/ui/PageTransition";
 import { useCitySearch } from '@hooks/useCitySearch';
-import styles from "./RegisterProfile.module.scss";
+import styles from "./scss/Register.module.scss";
 import api from "@api";
 
 interface FormData {
@@ -705,3 +705,5 @@ export const RegisterProfile: React.FC<{ className?: string }> = ({ className })
     </PageTransition>
   );
 };
+
+export default RegisterProfile;

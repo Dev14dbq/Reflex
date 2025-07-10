@@ -1,9 +1,14 @@
 // src/chat.ts
 import { WebSocket } from "ws";
 import { IncomingMessage } from "http";
-import jwt from "jsonwebtoken";
 import { prisma } from "./prisma.ts";
 import { sendTG } from "./notify.ts";
+
+import nacl from 'tweetnacl';
+import naclUtil from 'tweetnacl-util';
+import { sha256 } from 'js-sha256';
+import jwt from "jsonwebtoken";
+
 
 interface RpcRequest {
   id?: number;
@@ -288,8 +293,21 @@ export function chatWebSocket(ws: WebSocket, req: IncomingMessage) {
             const recipUser = await prisma.user.findUnique({ where: { id: recipientId } });
             const settings = await prisma.settings.findUnique({ where: { userId: recipientId } });
             if (recipUser && (!settings || settings.notifyMessages)) {
-              const snippet = text ? text.slice(0,30) : (mediaUrl ? "[медиа]" : "сообщение");
-              sendTG(recipUser.telegramId, `💬 Новое сообщение от ${ (await prisma.user.findUnique({where:{id:userId},select:{profile:{select:{preferredName:true}}}}))?.profile?.preferredName || "пользователя" }: ${snippet}`);
+              // TODO: Добавить проверку настроек уведомлений. 
+              sendTG(recipUser.telegramId, `💬 У вас есть новое сообщение от *${(
+                await prisma.user.findUnique({
+                  where: {
+                    id:userId
+                  },
+                  select: {
+                    profile: {
+                      select: {
+                        preferredName:true
+                      }
+                    }
+                  }
+                }))?.profile?.preferredName || "Неизвестного пользователя"
+              }*!`);
             }
           }
           break;
@@ -352,7 +370,7 @@ export function chatWebSocket(ws: WebSocket, req: IncomingMessage) {
           if (!Array.isArray(messageIds) || messageIds.length === 0) {
             return sendError(400, "messageIds required");
           }
-
+ 
           await prisma.message.updateMany({
             where: {
               id: { in: messageIds },
@@ -389,3 +407,99 @@ export function chatWebSocket(ws: WebSocket, req: IncomingMessage) {
     console.error("[WS] Chat socket error:", err);
   });
 }
+
+export async function createKey(chat: any) {
+  try {
+    const secret = `${process.env.CHAT_SECRET}-${chat.id}_${chat.userAId}_${chat.userBId}`;
+    const seed = new Uint8Array(sha256.array(secret));
+    const keyPair = nacl.box.keyPair.fromSecretKey(seed);
+
+    const encryptionKeyA = new Uint8Array(sha256.array(chat.userAId));
+    const encryptionKeyB = new Uint8Array(sha256.array(chat.userBId));
+
+    /**
+     * Функция для шифрования сообщений. В данном случае мы шифруем приватные ключи для безопастного хранения в дата базе!
+     */
+    function encryptMessage(message: string, key: Uint8Array) {
+      const nonce = new Uint8Array(24);
+      const messageBytes = naclUtil.decodeUTF8(message);
+      const ciphertext = nacl.secretbox(messageBytes, nonce, key);
+      return { nonce, ciphertext };
+    }
+
+    const encryptedPrivKeyA = encryptMessage(naclUtil.encodeBase64(keyPair.secretKey), encryptionKeyA);
+    const encryptedPrivKeyB = encryptMessage(naclUtil.encodeBase64(keyPair.secretKey), encryptionKeyB);
+
+    return await prisma.chatKey.create({
+      data: {
+        PubKey: naclUtil.encodeBase64(keyPair.publicKey),
+        PrivatKeyUserA: naclUtil.encodeBase64(encryptedPrivKeyA.ciphertext),
+        PrivatKeyUserB: naclUtil.encodeBase64(encryptedPrivKeyB.ciphertext),
+        encryptionKeyA: naclUtil.encodeBase64(encryptionKeyA),
+        encryptionKeyB: naclUtil.encodeBase64(encryptionKeyB),
+        nonceA: naclUtil.encodeBase64(encryptedPrivKeyA.nonce),
+        nonceB: naclUtil.encodeBase64(encryptedPrivKeyB.nonce),
+      }
+    });
+  } catch (err) {
+    console.error("[createKey] Ошибка при создании ключей чата:", err);
+    throw err;
+  }
+}
+
+import { Router } from "express";
+
+const chatRouter = Router();
+
+chatRouter.post("/chat/keys", async (req:any, res): Promise<void> => {
+  try {
+    const secret = `${process.env.CHAT_SECRET}-${req.body.key.chatID}_${req.body.key.userA}_${req.body.key.userB}`;
+    const seed = new Uint8Array(sha256.array(secret));
+    const keyPair = nacl.box.keyPair.fromSecretKey(seed);
+
+    const PubKey = naclUtil.encodeBase64(keyPair.publicKey);
+    const data = await prisma.chatKey.findUnique({ where: { PubKey } });
+
+    if(!data) {
+      res.status(500).json({ error: "Keys not found" });
+      return;
+    }
+    
+    function decryptPrivateKey(encryptedPrivKeyBase64: string, nonceBase64: string): string {
+      const encryptionKey = new Uint8Array(sha256.array(req.body.userId));
+      const ciphertext = naclUtil.decodeBase64(encryptedPrivKeyBase64);
+      const nonce = naclUtil.decodeBase64(nonceBase64);
+      const decrypted = nacl.secretbox.open(ciphertext, nonce, encryptionKey);
+      if (!decrypted) {
+        throw new Error("Failed to decrypt private key");
+      }
+      return naclUtil.encodeUTF8(decrypted);
+    }
+     
+    const PrivateKey = decryptPrivateKey(
+      req.body.userClass === 'A' ? data.PrivatKeyUserA : data.PrivatKeyUserB, 
+      req.body.userClass === 'A' ? data.nonceA : data.nonceB
+    );
+
+    res.json({
+      PubKey,
+      PrivateKey
+    });
+  } catch (e) {
+    console.error("[AUTH ERROR]", e);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+chatRouter.post("/chat/keys/create", async (req:any, res): Promise<void> => {
+  try {
+    const a = await createKey({ id: req.body.key.chatId, userAId: req.body.key.userA, userBId: req.body.key.userB })
+
+    res.status(200).json(a);
+  } catch (e) {
+    console.error("[AUTH ERROR]", e);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+export { chatRouter };

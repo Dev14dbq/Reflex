@@ -1,6 +1,7 @@
 import React from 'react';
 import { FiMessageCircle, FiRefreshCw, FiChevronLeft } from 'react-icons/fi';
 import { Chat } from './types';
+import { handleDecryption } from '@encryption';
 
 interface ChatListProps {
   chats: Chat[];
@@ -76,7 +77,13 @@ const ChatItem: React.FC<{
           
           <div className="flex items-center justify-between">
             <p className="text-sm neu-text-secondary truncate">
-              {chat.lastMessage || 'Начните разговор...'}
+              {(() => {
+                try {
+                  return handleDecryption(chat.lastMessage, chat.id);
+                } catch (error) {
+                  return 'Не удалось загрузить сообщения...';
+                }
+              })()}
             </p>
             
             {chat.unreadCount && chat.unreadCount > 0 && (

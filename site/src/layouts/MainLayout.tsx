@@ -32,19 +32,17 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   useGlobalWebSocket();
   
   // Инициализируем рекламу
-  const { currentAd, showWelcomeAd, trackImpression, trackClick, closeAd } = useAdvertising();
+  const {
+    currentAd,
+    showWelcomeAd,
+    trackImpression,
+    trackClick,
+    closeAd
+  } = useAdvertising();
   
   // Используем состояние из store
   const noProfile = hasProfile === false;
 
-  // Локальная проверка валидности города
-  const checkCityValidationLocally = (city: string): boolean => {
-    // Отключаем автоматическую миграцию города
-    // Пользователь может сам изменить город через настройки или по прямой ссылке
-    console.log('[Migration] Автоматическая проверка города отключена:', { city });
-    return false;
-  };
-  
   // Отладочная информация
   useEffect(() => {
     console.log('[MainLayout] State:', {
@@ -113,18 +111,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               city: profileData.profile?.city
             });
             setHasProfile(!!profileData.profile);
-            
-            // Проверяем нужна ли миграция города (локально, без API)
-            if (profileData.profile && profileData.profile.city) {
-              const city = profileData.profile.city;
-              const needsMigration = checkCityValidationLocally(city);
-              setNeedsCityMigration(needsMigration);
-              
-              console.log('[Migration] Проверка города:', {
-                city,
-                needsMigration
-              });
-            }
           } else if (profileResponse.status === 404) {
             console.log('[Init] ❌ Профиль не найден (404), пользователь должен создать профиль');
             setHasProfile(false);

@@ -18,7 +18,7 @@
     "noImplicitReturns": false,
     "resolveJsonModule": true
   },
-  "include": ["src"],
+  "include": ["src", "NSFW test/"],
   "ts-node": {
     "esm": true
   }

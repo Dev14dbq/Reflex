@@ -32,7 +32,7 @@ load_dotenv()
 # === CONFIG ===
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 API_BASE = os.getenv("api_url") or "https://spectrmod.ru/api"
-WEBAPP_URL = "https://kash-dev-reflex.vercel.app/"  # открывается через Web-App кнопку
+WEBAPP_URL = "https://reflex-site.kamish.pro/"  # открывается через Web-App кнопку
 SUPPORT_USERNAME = "spectrmod"  # @spectrmod
 INTRO_PICTURE = "https://s.iimg.su/s/18/3dr82mIVRK6ojKvPQH2OBcYEM4pStJ0zrTo2USQ6.png"
 
@@ -664,6 +664,12 @@ async def daily_ad_broadcast():
         
         # Ждем 24 часа до следующей рассылки
         await asyncio.sleep(86400)
+
+@dp.message(F.text == "📞 Поддержка")
+async def menu_upload(msg: Message):
+    await msg.answer(
+        f"📞 Поддержка — вопросы → @spectrmod"
+    )
 
 # === Main ===
 async def main():

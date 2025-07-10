@@ -1,13 +1,14 @@
-const axios = require('axios');
+import axios from 'axios';
+import dotenv from "dotenv"; dotenv.config();
 
 // Замените на ваш реальный JWT токен
-const JWT_TOKEN = 'YOUR_JWT_TOKEN_HERE';
+const JWT_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWNwenRqeHkwMDAwdWswY3RmZmR2NTk1IiwiaWF0IjoxNzUxOTY5NzYwLCJleHAiOjE3NTQ1NjE3NjB9.F1VmeCKaHf53aRWmOdwe8_B-oFZdezumhdJ4iwDnGkU';
 
 // URL вашего API
-const API_URL = 'https://spectrmod.ru/api';
+const API_URL = process.env.API_URL || 'https://spectrmod.ru/api';
 
 // Тестовое изображение (безопасное)
-const TEST_IMAGE_URL = 'https://via.placeholder.com/300x300.png?text=Test+Image';
+const TEST_IMAGE_URL = 'https://lf16-tiktok-common.tiktokcdn-us.com/obj/tiktok-web-common-tx/ttep/static/tiktok_effect_webapp/build/_assets/download-studio-display-2-0-2fe9dafdfc1d8c65a101.png';
 
 async function testNsfwApi() {
   try {
@@ -31,8 +32,6 @@ async function testNsfwApi() {
   } catch (error) {
     if (error.response) {
       console.error('❌ Ошибка API:', error.response.status, error.response.data);
-    } else if (error.request) {
-      console.error('❌ Нет ответа от сервера');
     } else {
       console.error('❌ Ошибка:', error.message);
     }

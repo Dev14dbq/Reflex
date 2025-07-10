@@ -1,4 +1,4 @@
-import { config } from '../config/env';
+import { config } from '../config/env.ts';
 
 class ApiService {
   private baseUrl: string;
@@ -48,19 +48,7 @@ class ApiService {
       },
     };
 
-    const response = await fetch(url, config);
-    
-    /**
-     * Логирование запросов (Если активен режим Разработки)
-     */
-    if (import.meta.env.DEV) {
-      console.log(`[API] ${options.method || 'GET'} - ${url}`, {
-        status: response.status,
-        config,
-      });
-    }
-
-    return response;
+    return await fetch(url, config);
   }
 
   /**
@@ -142,6 +130,8 @@ class ApiService {
 }
 
 /**
- * Создание единственного экземпляра класса ApiService
+ * Эспорт класса ApiService
+ * 
+ * Доступные функции: get(), post(), put(), patch(), delete()
  */
 export default new ApiService(); 

@@ -357,3 +357,15 @@ model ModeratorMessage {
   @@index([isRead])
   @@index([createdAt])
 }
+
+// Ключи для шифрования сообщений. P.S. Я разрешаю тебе читать сообщения но пожалуйста не троль людей... Мы должны поддерживать илюзию что сообщения доступны тока собеседникам
+model ChatKey {
+  PubKey          String   @id
+  PrivatKeyUserA  String
+  PrivatKeyUserB  String
+  encryptionKeyA  String
+  encryptionKeyB  String
+  nonceA          String   // Nonce для расшифровки PrivatKeyUserA
+  nonceB          String   // Nonce для расшифровки PrivatKeyUserB
+  createdAt       DateTime @default(now())
+}

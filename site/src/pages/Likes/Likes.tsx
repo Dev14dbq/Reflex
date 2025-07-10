@@ -742,3 +742,5 @@ export const Likes: React.FC = () => {
     </div>
   );
 };
+
+export default Likes

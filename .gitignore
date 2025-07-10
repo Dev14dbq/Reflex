@@ -22,6 +22,7 @@ __pycache__/
 *_key
 .secrets/
 secrets/
+venv
 
 # Git credentials (КРИТИЧЕСКИ ВАЖНО!)
 .git-credentials

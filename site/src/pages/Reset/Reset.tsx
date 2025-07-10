@@ -34,3 +34,5 @@ export const Reset: React.FC = () => {
     </div>
   );
 }; 
+
+export default Reset

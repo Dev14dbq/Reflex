@@ -1,5 +1,5 @@
-import { prisma } from "./prisma.ts";
-import { checkImageNsfw, initializeNsfwModel } from "./nsfw.ts";
+import { prisma } from "../prisma.ts";
+import { checkImageNsfw, initializeNsfwModel } from "../nsfw.ts";
 import axios from "axios";
 
 // Количество параллельных проверок

@@ -24,7 +24,8 @@ def compute_features(profile):
     }
 
 features = pd.DataFrame([compute_features(p) for p in data["profiles"]])
-profile_ids = features.pop("profileId")
+if not features.empty:
+    profile_ids = features.pop("profileId")
 
 model = lgb.Booster(model_file=model_path)
 scores = model.predict(features)

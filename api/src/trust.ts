@@ -1,14 +1,16 @@
 import { prisma } from "./prisma.ts";
 
-// Причины изменения уровня доверия
+/**
+ * Причины изменения уровня "Доверия"
+ */
 export enum TrustChangeReason {
   // Положительные действия
-  PROFILE_COMPLETED = "profile_completed",
-  PHOTO_ADDED = "photo_added",
-  VERIFIED_PHONE = "verified_phone",
-  ACTIVE_CHATS = "active_chats",
-  POSITIVE_REPORTS = "positive_reports",
-  GOOD_BEHAVIOR = "good_behavior",
+  PROFILE_COMPLETED = "profile_completed", /* Провереный профиль - Модерация проверила профиль */
+  PHOTO_ADDED = "photo_added", /* В профиле есть фото */
+  VERIFIED_PHONE = "verified_phone", /* Ваще хз */
+  ACTIVE_CHATS = "active_chats", /* хз */
+  POSITIVE_REPORTS = "positive_reports", /* хз */
+  GOOD_BEHAVIOR = "good_behavior", /* хз*/
   
   // Негативные действия
   NSFW_CONTENT = "nsfw_content",

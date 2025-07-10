@@ -233,3 +233,5 @@ export const App: React.FC<{ className?: string }> = ({ className }) => {
     </div>
   );
 };
+
+export default App

@@ -1,12 +1,13 @@
 {
   "name": "reflex-telegraf-bot",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "dist/bot.js",
   "type": "module",
   "scripts": {
-    "start": "node dist/bot.js",
+    "prebuild": "node scripts/gen-build-info.js",
+    "start": "node dist/src/bot.js",
     "build": "tsc",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/bot.ts"
   },
   "dependencies": {
     "axios": "^1.6.7",

@@ -1,11 +1,11 @@
 import { Telegraf } from "telegraf";
-import { uploadPhotoMenu } from "./uploadPhotoMenu";
-import { uploadMorePhoto } from "./uploadMorePhoto";
-import { backToMainMenu } from "./backToMainMenu";
-import { supportMenu } from "./supportMenu";
-import { handlePhotoUpload } from "./handlePhotoUpload";
-import { finishUpload } from "./finishUpload";
-import { handleAdClick } from "./handleAdClick";
+import { uploadPhotoMenu } from "./uploadPhotoMenu.js";
+import { uploadMorePhoto } from "./uploadMorePhoto.js";
+import { backToMainMenu } from "./backToMainMenu.js";
+import { supportMenu } from "./support.js";
+import { handlePhotoUpload } from "./handlePhotoUpload.js";
+import { finishUpload } from "./finishUpload.js";
+import { handleAdClick } from "./handleAdClick.js";
 
 export function registerButtons(bot: Telegraf) {
   uploadPhotoMenu(bot);

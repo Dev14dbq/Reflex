@@ -60,7 +60,7 @@ jobs:
         cd bot
         npm run start
       env:
-        BOT_TOKEN: null
+        BOT_TOKEN: ${{ env.dev_token }}
     
     # Запукс линтера
     - name: Run Linters

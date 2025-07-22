@@ -58,9 +58,12 @@ jobs:
     - name: Code run
       run: |
         cd bot
+        echo 'Hello'
+        echo ${{ env.dev_token }}
+        echo ${{ env.Reflex.dev_token }}
         npm run start
       env:
-        BOT_TOKEN: null
+        BOT_TOKEN: ${{ env.dev_token }}
     
     # Запукс линтера
     - name: Run Linters

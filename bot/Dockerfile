@@ -13,4 +13,4 @@ COPY . .
 # Билд проекта
 RUN npm run build
 
-CMD ["npm", "run", "start", "--port", "5000"]
+CMD ["npm", "run", "start"]

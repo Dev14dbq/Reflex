@@ -3,14 +3,17 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Копируем package files
-COPY package*.json ./
+COPY package.json .
 
 # Устанавливаем зависимости
-RUN npm ci
+RUN npm install
 
 # Копируем исходный код
 COPY . .
 
-EXPOSE 3000
+# Компилируем сайт
+RUN npm run build
 
-CMD ["npm", "run", "dev"] 
+EXPOSE 4173
+
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0"] 

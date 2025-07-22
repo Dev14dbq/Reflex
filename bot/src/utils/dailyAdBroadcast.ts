@@ -2,13 +2,13 @@ import { Telegraf, Markup } from "telegraf";
 import axios from "axios";
 
 import { getAdvertisement } from "./api.js";
-import { API_BASE } from "../config.js";
+import { API_BASE, BOT_TOKEN } from "../config.js";
 
 export async function dailyAdBroadcast(bot: Telegraf) {
     while (true) {
         const DateNow = new Date();
         let target = new Date(DateNow);
-        target.setHours(15, 0, 0, 0);
+        target.setHours(12, 0, 0, 0); // 15 часов по мск
 
         if (DateNow >= target) {
             target.setDate(target.getDate() + 1);
@@ -19,9 +19,14 @@ export async function dailyAdBroadcast(bot: Telegraf) {
         await new Promise((r) => setTimeout(r, waitMs));
 
         try {
+            console.log('[ADS] Рассылка запущенна!');
+
             const url = `${API_BASE}/stats/all-users`;
             const { data } = await axios.get(url, {
-                timeout: 30000
+                timeout: 30000,
+                headers: {
+                    Authorization: "Bearer " + BOT_TOKEN
+                }
             });
 
             const users = data.users || [];
@@ -52,10 +57,11 @@ export async function dailyAdBroadcast(bot: Telegraf) {
                                 }
                             );
                         }
+
+                        SuccessSendAds++;
                     }
 
-                    SuccessSendAds++;
-                    await new Promise((r) => setTimeout(r, 100));
+                    await new Promise((r) => setTimeout(r, 300));
                 } catch (error) {
                     console.error('[ADS] Ошибка при отправке ежедневной рекламы:', error)
                 }

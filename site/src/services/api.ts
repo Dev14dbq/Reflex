@@ -1,4 +1,4 @@
-import { config } from '../config/env';
+import { config } from '../config/env.js';
 
 class ApiService {
   private baseUrl: string;
@@ -27,7 +27,7 @@ class ApiService {
    */
   public async request(endpoint: string, options: RequestInit = {}): Promise<Response> {
     const url = this.getUrl(endpoint);
-    
+
     const defaultHeaders: HeadersInit = {
       'Content-Type': 'application/json',
     };
@@ -48,19 +48,8 @@ class ApiService {
       },
     };
 
-    const response = await fetch(url, config);
-    
-    /**
-     * Логирование запросов (Если активен режим Разработки)
-     */
-    if (import.meta.env.DEV) {
-      console.log(`[API] ${options.method || 'GET'} - ${url}`, {
-        status: response.status,
-        config,
-      });
-    }
-
-    return response;
+    const result = await fetch(url, config);
+    return result;
   }
 
   /**
@@ -142,6 +131,8 @@ class ApiService {
 }
 
 /**
- * Создание единственного экземпляра класса ApiService
+ * Эспорт класса ApiService
+ * 
+ * Доступные функции: get(), post(), put(), patch(), delete()
  */
 export default new ApiService(); 

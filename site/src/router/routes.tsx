@@ -7,17 +7,28 @@ import { AnimatePresence } from "framer-motion";
 import { MainLayout } from "@layouts/MainLayout";
 
 // TODO: Сгрупировать 
-import { App } from "@page/App/App";
-import { RegisterProfile } from "@page/RegisterProfile/RegisterProfile";
-import { Search } from "@page/Search/Search";
-import { ProfileView } from "@page/Profile/Profile";
-import { Likes } from "@page/Likes/Likes";
-import { Chat } from "@page/Chat/Chat";
-import { Settings } from "@page/Settings/Settings";
-import { NotificationSettings } from "@page/Settings/NotificationSettings";
-import { RecommendationSettings } from "@page/Settings/RecommendationSettings";
-import { Reset } from "@page/Reset/Reset";
-import { MyProfile } from "@page/Profile/MyProfile";
+import { RegisterProfile } from "@page/RegisterProfile";
+import { Search } from "@page/Search";
+import { Likes } from "@page/Likes";
+import { Chat } from "@page/Chat";
+import { App } from "@page/App";
+
+
+import { 
+    ProfileView,
+    MyProfile
+} from "@page/Profile";
+
+import {
+    Settings,
+    Recommendation,
+    Notification
+} from "@page/Settings";
+
+import {
+    Reset
+} from "@page/Reset";
+
 import { CityMigration } from "@page/CityMigration/CityMigration";
 import { AdminPanel } from "@page/Admin/AdminPanel";
 import { AdminUsers } from "@page/Admin/AdminUsers";
@@ -171,8 +182,8 @@ export const AppRoutes = () => {
           <Route path="chats" element={<Chat />} />
           <Route path="search" element={<Search />} />
           <Route path="settings" element={<Settings />} />
-          <Route path="settings/notifications" element={<NotificationSettings />} />
-          <Route path="settings/recommendations" element={<RecommendationSettings />} />
+          <Route path="settings/notifications" element={<Notification />} />
+          <Route path="settings/recommendations" element={<Recommendation />} />
           <Route path="profile/:profileId" element={<ProfileView />} />
           <Route path="register" element={<RegisterProfile />} />
           <Route path="my-profile" element={<MyProfile />} />

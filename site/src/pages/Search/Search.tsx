@@ -1,64 +1,66 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useSwipeable } from "react-swipeable";
-
-import { config } from '@env';
-import api from "@api";
 import { 
-  FiMapPin, 
-  FiHeart, 
-  FiX, 
-  FiFlag, 
-  FiLink, 
-  FiUser,
-  FiAlertCircle,
-
+    FiMapPin, 
+    FiHeart, 
+    FiX, 
+    FiFlag, 
+    FiLink, 
+    FiUser,
+    FiAlertCircle,
 } from "react-icons/fi";
+
 import { LoadingCard, ErrorCard } from "@components/ui";
 import { useAdvertising } from "@hooks/useAdvertising";
+import { config } from '@env';
+import api from "@api";
 
 type Profile = {
-  id: string;
-  userId: string;
-  preferredName: string;
-  description: string;
-  city: string;
-  goals: string[];
-  birthYear: string;
-  user: { username: string };
-  images?: string[];
+    id: string;
+    userId: string;
+    preferredName: string;
+    description: string;
+    city: string;
+    goals: string[];
+    birthYear: string;
+    user: { username: string };
+    images?: string[];
 };
 
 const COMPLAINT_REASONS = [
-  "Спам",
-  "Нецензурная лексика", 
-  "Неподходящие фото",
-  "Другая причина"
+    "Спам",
+    "Реклама", 
+    "Неподходящие фото",
+    "Нецензурная лексика", 
+    "Материальная помощь (МП)", 
+    "Другая причина"
 ];
 
 export const Search: React.FC = () => {
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [idx, setIdx] = useState(0);
-  const [complaintOpen, setComplaintOpen] = useState(false);
-  const [complaintReason, setComplaintReason] = useState("");
-  const [otherReason, setOtherReason] = useState("");
+    const [profile, setProfile] = useState<Profile | null>(null);
+    const [complaintReason, setComplaintReason] = useState("");
+    const [complaintOpen, setComplaintOpen] = useState(false);
+    const [otherReason, setOtherReason] = useState("");
+    const [idx, setIdx] = useState(0);
 
   // Navigation controls state
-  const [showNavControls, setShowNavControls] = useState(true);
-  const navControlsTimeoutRef = useRef<NodeJS.Timeout>();
-  const [isConnecting, setIsConnecting] = useState(true);
+    const [showNavControls, setShowNavControls] = useState(true);
+    const navControlsTimeoutRef = useRef<NodeJS.Timeout>();
+    const [isConnecting, setIsConnecting] = useState(true);
 
   // Swipe states
-  const [swipeX, setSwipeX] = useState(0);
-  const [isSwiping, setIsSwiping] = useState(false);
-  const [swipeDirection, setSwipeDirection] = useState<'like' | 'dislike' | null>(null);
+    const [swipeX, setSwipeX] = useState(0);
+    const [isSwiping, setIsSwiping] = useState(false);
+    const [swipeDirection, setSwipeDirection] = useState<'like' | 'dislike' | null>(null);
 
-  const token = localStorage.getItem("token");
-  const wsRef = useRef<WebSocket>();
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
-  const reconnectAttemptsRef = useRef(0);
+    const token = localStorage.getItem("token");
+
+    const wsRef = useRef<WebSocket>();
+    const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
+    const reconnectAttemptsRef = useRef(0);
   
   // Инициализируем рекламу
-  const { incrementActionCount } = useAdvertising();
+    const { incrementActionCount } = useAdvertising();
 
   /** Расширенная обработка ошибок: none ‑ нет ошибки, connection ‑ проблемы сети, no-profiles ‑ закончились анкеты, technical ‑ сбой сервера */
   const [errorType, setErrorType] = useState<'none' | 'connection' | 'no-profiles' | 'technical'>('none');
@@ -66,34 +68,37 @@ export const Search: React.FC = () => {
   useEffect(() => { errorTypeRef.current = errorType; }, [errorType]);
 
   // Функция для получения правильного сообщения об ошибке — объявляем ДО её первого использования
-  const getErrorMessage = () => {
-    switch (errorType) {
-      case 'connection':
-        return {
-          title: 'Проблемы с подключением',
-          description: 'Проверьте интернет-соединение и попробуйте снова',
-          retryText: 'Переподключиться',
-        } as const;
-      case 'no-profiles':
-        return {
-          title: 'Нет новых анкет',
-          description: 'Вы просмотрели все доступные анкеты. Загляните позже!',
-          retryText: 'Проверить снова',
-        } as const;
-      case 'technical':
-        return {
-          title: 'Техническая ошибка',
-          description: 'Что-то пошло не так на нашей стороне. Пожалуйста опробуйте позже!',
-          retryText: 'Повторить',
-        } as const;
-      default:
-        return {
-          title: 'Загрузка...',
-          description: 'Ищем интересных людей для вас',
-          retryText: 'Обновить',
-        } as const;
-    }
-  };
+    const getErrorMessage = () => {
+        switch (errorType) {
+            case 'connection':
+                return {
+                    title: 'Проблемы с интернет подключением',
+                    description: 'Проверьте интернет-соединение и попробуйте снова!',
+                    retryText: 'Переподключиться',
+                } as const;
+
+            case 'no-profiles':
+                return {
+                    title: 'Новые анкеты отсуствуют',
+                    description: 'Вы просмотрели все доступные анкеты. Но вы можете заглянуть позже!',
+                    retryText: 'Проверить снова',
+                } as const;
+
+            case 'technical':
+                return {
+                    title: 'Техническая ошибка',
+                    description: 'Что-то пошло не так на нашей стороне. Пожалуйста опробуйте позже!',
+                    retryText: 'Повторить',
+                } as const;
+      
+			default:
+                return {
+                    title: 'Выполняется поиск анкет',
+                    description: 'Ищем интересных людей для вас',
+                    retryText: 'Обновить',
+                } as const;
+        }
+    };
 
   // Функция для управления навигационными кнопками
   const showNavControlsWithTimer = useCallback(() => {
@@ -151,17 +156,19 @@ export const Search: React.FC = () => {
       return;
     }
 
-    // Отложенное создание сокета на 500мс для стабильности
+    /**
+	 * Откладываем создания WS соединения для стабильности
+	 */
     const timeoutId = setTimeout(() => {
-    
-    const ws = new WebSocket(`${config.WS_URL}/search?token=${token}`);
-    wsRef.current = ws;
+        const ws = new WebSocket(`${config.WS_URL}/search?token=${token}`);
+        wsRef.current = ws;
 
-    ws.onopen = () => {
-      setIsConnecting(false);
-        setErrorType('none');
-        reconnectAttemptsRef.current = 0; // Сбрасываем счетчик попыток
-    };
+        ws.onopen = () => {
+            setIsConnecting(false);
+            setErrorType('none');
+
+            reconnectAttemptsRef.current = 0;
+        };
 
     ws.onmessage = (e) => {
       const data = JSON.parse(e.data);
@@ -302,8 +309,9 @@ export const Search: React.FC = () => {
     trackMouse: true
   });
 
-  const copyLink = () => {
-    if (!profile) return;
+    const copyLink = () => {
+        if (!profile) return;
+		
     const url = `${window.location.origin}/profile/${profile.id}`;
     navigator.clipboard.writeText(url);
     // Show success feedback
@@ -319,7 +327,7 @@ export const Search: React.FC = () => {
   const openComplaint = () => setComplaintOpen(true);
   
   const submitComplaint = async () => {
-    const reason = complaintReason === "Другое..." ? otherReason : complaintReason;
+    const reason = complaintReason === "Другая причина" ? otherReason : complaintReason;
     
     console.log('[SEARCH] Profile data:', profile);
     console.log('[SEARCH] Submitting complaint:', { userId: profile?.id, reason, type: 'search' });
@@ -338,14 +346,14 @@ export const Search: React.FC = () => {
       
       const data = await response.json();
       
-      if (response.ok) {
-        alert('Жалоба отправлена. Модераторы рассмотрят её в ближайшее время.');
-      } else {
-        throw new Error(data.error || 'Failed to submit complaint');
-      }
+        if (response.ok) {
+            alert('Вы успешно отправили жалобу на данного пользователя! Модерация рассмотрит её в ближайшее время.');
+        } else {
+            throw new Error(data.error || 'Failed to submit complaint');
+        }
     } catch (error) {
-      console.error(profile);
-      alert('Ошибка при отправке жалобы. Попробуйте ещё раз.');
+        console.error(profile);
+        alert('К сожалению, возникла ошибка при отправке жалобы! Попробуйте ещё раз. (При повторе ошибки напишите в поддержку!)');
     }
     
     setComplaintOpen(false);
@@ -357,7 +365,7 @@ export const Search: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center p-3 sm:p-6">
         <LoadingCard 
-          title="Подключение..." 
+          title="Выполняется поиск анкет" 
           description="Ищем интересных людей для вас"
         />
       </div>
@@ -382,12 +390,14 @@ export const Search: React.FC = () => {
     );
   }
 
-  // Профиль ещё не получен, но ошибок тоже нет — показываем лоадер
+  /**
+   * Если данные профиля ещё не поступили но WS не передал ошибку то - показываем лоадер
+   */
   if (!profile) {
     return (
       <div className="min-h-screen flex items-center justify-center p-3 sm:p-6">
         <LoadingCard
-          title="Загрузка анкет..."
+          title="Выполняется поиск анкет"
           description="Ищем подходящих людей"
         />
       </div>
@@ -472,7 +482,7 @@ export const Search: React.FC = () => {
                         }`}
                       >
                         <img
-                          src={img}
+                          src={img.replace('/api', '')}
                           alt={`Фотография ${profile.preferredName}`}
                           className={`w-full h-full cursor-pointer ${
                             hasRealImages ? 'object-cover' : 'object-contain bg-gradient-to-br from-neu-accent-primary/20 to-neu-accent-secondary/20'
@@ -691,7 +701,7 @@ export const Search: React.FC = () => {
               ))}
             </div>
 
-            {complaintReason === "Другое..." && (
+            {complaintReason === "Другая причина" && (
               <div className="mb-4">
                 <textarea
                   className="neu-input w-full min-h-[80px] sm:min-h-[100px] resize-none text-sm sm:text-base"
@@ -715,7 +725,7 @@ export const Search: React.FC = () => {
               </button>
               <button
                 onClick={submitComplaint}
-                disabled={!complaintReason || (complaintReason === "Другое..." && !otherReason.trim())}
+                disabled={!complaintReason || (complaintReason === "Другая причина" && !otherReason.trim())}
                 className="neu-btn-danger flex-1 py-3 sm:py-2 rounded-neu-md disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base touch-manipulation"
               >
                 Отправить
@@ -727,3 +737,5 @@ export const Search: React.FC = () => {
     </div>
   );
 };
+
+export default Search

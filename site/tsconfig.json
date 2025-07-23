@@ -10,8 +10,8 @@
     "module": "ESNext",
     "skipLibCheck": true,
     /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -32,10 +32,10 @@
         "pages/*"
       ],
       "@routes": [
-        "router/routes.tsx"
+        "router/routes.jsx"
       ],
       "@env": [
-        "config/env.ts"
+        "config/env.js"
       ],
       "@hooks/*": [
         "hooks/*"
@@ -50,7 +50,10 @@
         "components/*"
       ],
       "@api": [
-        "services/api.ts"
+        "services/api.js"
+      ],
+      "@encryption": [
+        "services/encryption.js"
       ]
     }
   },

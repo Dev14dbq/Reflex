@@ -13,6 +13,7 @@ import "./index.scss";
 if (import.meta.env.PROD) {
   console.log = () => {};
   console.debug = () => {};
+  console.error = () => {};
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

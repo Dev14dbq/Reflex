@@ -3,10 +3,10 @@ import { ChatList } from './ChatList';
 import { ChatDetail } from './ChatDetail';
 import { useGlobalWebSocket } from '@hooks/useGlobalWebSocket';
 import { Message, ChatState } from './types';
-import { FiWifiOff, FiRefreshCw, FiMessageCircle } from 'react-icons/fi';
-
+import { FiWifiOff, FiRefreshCw, FiMessageCircle } from 'react-icons/fi';   
 
 import { useUserStore } from '../../stores/user';
+import { getKey, createKey, handleEncryption, handleDecryption } from '@encryption';
 
 // Reducer для управления состоянием чатов
 const chatReducer = (state: ChatState, action: any): ChatState => {
@@ -149,14 +149,20 @@ export const Chat: React.FC = () => {
 
 
   // Обработка событий чата
-  const handleChatEvent = useCallback((event: any) => {
-    console.log('[Chat] Получено событие:', event);
-    
+  const handleChatEvent = useCallback((event: any) => {    
     switch (event.event) {
       case 'new_message':
         // Добавляем новое сообщение
+        
         const message = {
           ...event.payload.message,
+          text: (() => {
+            try {
+              return handleDecryption(event.payload.message.text ?? '', event.payload.chatId);
+            } catch (e) {
+              return event.payload.message.text;
+            }
+          })(),
           isOwn: event.payload.message.senderId === currentUserId
         };
         
@@ -228,7 +234,6 @@ export const Chat: React.FC = () => {
     editMessage,
     deleteMessage,
     subscribe,
-
     markRead
   } = useGlobalWebSocket();
 
@@ -252,6 +257,7 @@ export const Chat: React.FC = () => {
         dispatch({ type: 'SET_ERROR', payload: 'Не удалось загрузить чаты' });
       }
     } catch (error) {
+      console.log('[CHAT] Ошибка при получении чатов:', error)
       dispatch({ type: 'SET_ERROR', payload: 'Ошибка при загрузке чатов' });
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
@@ -260,11 +266,42 @@ export const Chat: React.FC = () => {
 
   const handleSelectChat = useCallback(async (chatId: string) => {
     try {
-      const [, messagesResponse] = await Promise.all([
+      const [i, messagesResponse] = await Promise.all([
         openChat(chatId),
         getMessages(chatId, 30)
       ]);
-      
+
+      if(!localStorage.getItem(`${chatId}-PubKey`) || !localStorage.getItem(`${chatId}-PrivateKey`)) {
+        try {
+          let res = await getKey(i);
+
+          if(res && 'error' in res) {
+            res = await createKey(i);
+          }
+
+          if(res && 'PubKey' in res && 'PrivateKey' in res) {
+            localStorage.setItem(`${chatId}-PubKey`, res.PubKey);
+            localStorage.setItem(`${chatId}-PrivateKey`, res.PrivateKey);
+          }
+        } catch (error) {
+          console.error('[KEY] Failed to get chat key! Error:', error);
+        }
+      }
+
+      // Проходимся по каждому сообщению и изменяем text на результат функции Nn
+      if (messagesResponse.items && Array.isArray(messagesResponse.items)) {
+        messagesResponse.items = messagesResponse.items.map((msg: Message) => ({
+          ...msg,
+          text: (() => {
+            try {
+              return handleDecryption(msg.text ?? '', chatId);
+            } catch (e) {
+              return msg.text;
+            }
+          })()
+        }));
+      }
+
       const processedMessages: Message[] = (messagesResponse.items || []).map((msg: Message) => ({
         ...msg,
         isOwn: msg.senderId === currentUserId,
@@ -273,7 +310,7 @@ export const Chat: React.FC = () => {
       dispatch({ type: 'SET_SELECTED_CHAT', payload: chatId });
       dispatch({ type: 'SET_MESSAGES', payload: { chatId, messages: processedMessages, nextCursor: messagesResponse.nextCursor } });
       
-      await subscribe(chatId);
+      await subscribe(chatId); 
     } catch (error) {
       console.error('[Chat] Ошибка при выборе чата:', error);
     }
@@ -281,7 +318,10 @@ export const Chat: React.FC = () => {
 
   const handleSendMessage = useCallback(async (chatId: string, text: string) => {
     try {
-      await sendMessage(chatId, text);
+      const encrypted = handleEncryption(text, chatId);
+      if (typeof encrypted !== 'string') return await sendMessage(chatId, text);
+
+      await sendMessage(chatId, encrypted);
     } catch (error) {
       console.error('[Chat] Ошибка отправки сообщения:', error);
     }
@@ -363,7 +403,7 @@ export const Chat: React.FC = () => {
   }
 
   return (
-    <div className="h-screen flex bg-neu-bg-primary">
+    <div className="h-full flex bg-neu-bg-primary">
       <div className={`${state.selectedChatId ? 'hidden lg:block' : 'block'} w-full lg:w-80 border-r border-neu-border`}>
         <ChatList
           chats={state.chats}
@@ -394,8 +434,11 @@ export const Chat: React.FC = () => {
               currentUserId={currentUserId}
               markRead={markRead}
               onSendMessage={handleSendMessage}
-              onEditMessage={async (messageId: string, text: string) => {
-                await editMessage(messageId, text);
+              onEditMessage={async (chatId: string, messageId: string, text: string) => {
+                const encrypted = handleEncryption(text, chatId);
+                if (typeof encrypted !== 'string') return await editMessage(messageId, text);
+          
+                await editMessage(messageId, encrypted);
               }}
               onDeleteMessage={async (messageId: string, scope: 'self' | 'both' = 'self') => {
                 await deleteMessage(messageId, scope);

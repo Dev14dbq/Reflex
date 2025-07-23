@@ -6,7 +6,7 @@ import clsx from "clsx";
 import { PageTransition } from "@components/ui/PageTransition";
 import api from "@api";
 
-import styles from "./Settings.module.scss";
+import styles from "./scss/Settings.module.scss";
 
 interface Profile {
     id: string;
@@ -70,7 +70,7 @@ const button = [
     }
 ];
 
-export const Settings: React.FC<{ className?: string }> = ({ className }) => {
+const Settings: React.FC<{ className?: string }> = ({ className }) => {
     const tgUser = (window as any).Telegram?.WebApp?.initDataUnsafe?.user;
     const token = localStorage.getItem("token");
 
@@ -193,3 +193,5 @@ export const Settings: React.FC<{ className?: string }> = ({ className }) => {
         </PageTransition>
     );
 };
+
+export default Settings

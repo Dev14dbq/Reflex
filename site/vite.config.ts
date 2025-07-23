@@ -15,6 +15,14 @@ export default defineConfig({
       '@stores': path.resolve(__dirname, './src/stores'),
       '@components': path.resolve(__dirname, './src/components'),
       '@api': path.resolve(__dirname, './src/services/api.ts'),
+      '@encryption': path.resolve(__dirname, './src/services/encryption.ts'),
     },
   },
+  server: {
+    port: 5000,
+    allowedHosts: [
+      "spectrmod.ru",
+      "dev.spectrmod.ru",
+    ]
+  }
 })

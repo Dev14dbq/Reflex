@@ -1,20 +1,16 @@
-FROM python:3.11-slim
+# Настройка контейнера
 
-WORKDIR /app
+FROM node:18
+WORKDIR /bot
 
-# Установка системных зависимостей
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    && rm -rf /var/lib/apt/lists/*
-
-# Копируем requirements файл
-COPY requirements.txt .
-
-# Устанавливаем Python зависимости
-RUN pip install --no-cache-dir -r requirements.txt
+# Установка зависимостей для npm
+COPY package.json package-lock.json ./
+RUN npm install
 
 # Копируем исходный код
 COPY . .
 
-CMD ["python", "bot.py"] 
+# Билд проекта
+RUN npm run build
+
+CMD ["npm", "run", "start"]

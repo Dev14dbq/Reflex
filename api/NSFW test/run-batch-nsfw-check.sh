@@ -20,7 +20,7 @@ then
     echo "================================================"
     
     # Запускаем скрипт
-    npx ts-node src/batch-check-all-images.ts
+    npx ts-node batch-check-all-images.ts
     
     echo ""
     echo "================================================"

@@ -336,3 +336,5 @@ export const MyProfile: React.FC = () => {
     </SlidePageTransition>
   );
 }; 
+
+export default MyProfile;

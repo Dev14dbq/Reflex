@@ -116,3 +116,5 @@ export const ProfileView: React.FC = () => {
     </div>
   );
 }; 
+
+export default ProfileView

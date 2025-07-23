@@ -349,3 +349,5 @@ export const CityMigration: React.FC = () => {
 
   return null;
 }; 
+
+export default CityMigration

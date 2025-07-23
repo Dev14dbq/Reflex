@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken";
 import { prisma } from "./prisma.ts";
 import { sendTG } from "./notify.ts";
 
+import {createKey} from "./chat.ts";
+
 export async function likesWebSocket(ws: WebSocket, req: IncomingMessage) {
   let userId: string;
   try {
@@ -126,6 +128,8 @@ export async function likesWebSocket(ws: WebSocket, req: IncomingMessage) {
               chat = await prisma.chat.create({
                 data: { userAId: user1, userBId: user2 },
               });
+
+              createKey(chat);
             }
 
             if (ws.readyState === WebSocket.OPEN) {

@@ -151,7 +151,7 @@ profileRouter.post("/profile/add-media", async (req, res): Promise<void> => {
   try {
     const user = await prisma.user.findUnique({
       where: { telegramId: BigInt(telegramId) },
-      include: { 
+      include: {
         profile: {
           include: {
             imageData: true
@@ -172,12 +172,14 @@ profileRouter.post("/profile/add-media", async (req, res): Promise<void> => {
       return;
     }
 
+    console.log(imageUrl)
+
     // Загружаем изображение для проверки и сохранения
-    const response = await axios.get(imageUrl, { 
+    const response = await axios.get(imageUrl, {
       responseType: "arraybuffer",
-      timeout: 30000 
+      timeout: 30000
     });
-    
+
     const imageBuffer = Buffer.from(response.data);
 
     // NSFW проверка (если не отключена)
@@ -191,7 +193,7 @@ profileRouter.post("/profile/add-media", async (req, res): Promise<void> => {
         isNsfw = nsfwResult.isNsfw;
         nsfwScore = nsfwResult.score;
         nsfwCategories = nsfwResult.predictions;
-        
+
         console.log(`[NSFW] Image check result:`, {
           isNsfw,
           score: nsfwScore,
@@ -216,7 +218,7 @@ profileRouter.post("/profile/add-media", async (req, res): Promise<void> => {
     await fsPromises.writeFile(filepath, imageBuffer);
 
     const publicUrl = `https://spectrmod.ru/api/cdn/image/${telegramId}/${filename}`;
-    
+
     // Создаем запись в модели Image
     const newOrder = user.profile.images.length;
     const newImage = await prisma.image.create({
@@ -255,7 +257,7 @@ profileRouter.post("/profile/add-media", async (req, res): Promise<void> => {
       await changeTrustScore(user.id, TrustChangeReason.PHOTO_ADDED);
     }
 
-    res.json({ 
+    res.json({
       profile: updated,
       nsfwDetection: {
         checked: !skipNsfwCheck,
@@ -361,10 +363,10 @@ profileRouter.get("/profile/check-city-migration", authMiddleware, async (req, r
     // 1. Слишком короткий (менее 2 символов)
     // 2. Содержит подозрительные слова
     // 3. Не содержит запятую (нет региона)
-    
+
     const city = profile.city || '';
     const suspiciousWords = ['мой', 'наш', 'тест', 'test', 'дом'];
-    
+
     // Список популярных городов, которые не требуют региона
     const popularCities = [
       'минск', 'киев', 'алматы', 'ташкент', 'баку', 'ереван', 'тбилиси',
@@ -372,11 +374,11 @@ profileRouter.get("/profile/check-city-migration", authMiddleware, async (req, r
       'одесса', 'харьков', 'днепр', 'львов', 'донецк', 'запорожье',
       'астана', 'шымкент', 'актобе', 'караганда', 'павлодар', 'усть-каменогорск'
     ];
-    
+
     const cityLower = city.toLowerCase();
     const isPopularCity = popularCities.some(popular => cityLower.includes(popular));
-    
-    const needsMigration = 
+
+    const needsMigration =
       city.length < 2 ||
       city.length > 100 ||
       suspiciousWords.some(word => cityLower.includes(word)) ||
@@ -391,9 +393,9 @@ profileRouter.get("/profile/check-city-migration", authMiddleware, async (req, r
 
   } catch (error: any) {
     console.error("[PROFILE] City migration check error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Failed to check city migration",
-      message: error.message 
+      message: error.message
     });
   }
 });
@@ -410,7 +412,7 @@ profileRouter.post("/profile/migrate-city", authMiddleware, async (req, res): Pr
     }
 
     const trimmedCity = newCity.trim();
-    
+
     if (trimmedCity.length < 2 || trimmedCity.length > 100) {
       res.status(400).json({ error: "City name must be between 2 and 100 characters" });
       return;
@@ -419,7 +421,7 @@ profileRouter.post("/profile/migrate-city", authMiddleware, async (req, res): Pr
     // Обновляем город в профиле
     const updatedProfile = await prisma.profile.update({
       where: { userId },
-      data: { 
+      data: {
         city: trimmedCity
       },
       select: {
@@ -439,9 +441,9 @@ profileRouter.post("/profile/migrate-city", authMiddleware, async (req, res): Pr
 
   } catch (error: any) {
     console.error("[PROFILE] City migration error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Failed to migrate city",
-      message: error.message 
+      message: error.message
     });
   }
 });
@@ -451,13 +453,13 @@ profileRouter.get("/profile/migration-stats", authMiddleware, async (req, res): 
   try {
     // Простая проверка - если это не админский запрос, возвращаем ошибку
     // В реальном проекте здесь должна быть проверка роли админа
-    
+
     const allProfiles = await prisma.profile.findMany({
       select: { city: true }
     });
 
     const suspiciousWords = ['мой', 'наш', 'тест', 'test', 'дом'];
-    
+
     // Список популярных городов, которые не требуют региона
     const popularCities = [
       'минск', 'киев', 'алматы', 'ташкент', 'баку', 'ереван', 'тбилиси',
@@ -465,7 +467,7 @@ profileRouter.get("/profile/migration-stats", authMiddleware, async (req, res): 
       'одесса', 'харьков', 'днепр', 'львов', 'донецк', 'запорожье',
       'астана', 'шымкент', 'актобе', 'караганда', 'павлодар', 'усть-каменогорск'
     ];
-    
+
     let needMigration = 0;
     let validCities = 0;
     const invalidCities: string[] = [];
@@ -474,8 +476,8 @@ profileRouter.get("/profile/migration-stats", authMiddleware, async (req, res): 
       const city = profile.city || '';
       const cityLower = city.toLowerCase();
       const isPopularCity = popularCities.some(popular => cityLower.includes(popular));
-      
-      const isInvalid = 
+
+      const isInvalid =
         city.length < 2 ||
         city.length > 100 ||
         suspiciousWords.some(word => cityLower.includes(word)) ||
@@ -503,9 +505,9 @@ profileRouter.get("/profile/migration-stats", authMiddleware, async (req, res): 
 
   } catch (error: any) {
     console.error("[PROFILE] Migration stats error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Failed to get migration stats",
-      message: error.message 
+      message: error.message
     });
   }
 });
@@ -569,17 +571,17 @@ profileRouter.post("/complaints", authMiddleware, async (req, res): Promise<void
 
     console.log(`[COMPLAINTS] New complaint created: ${complaint.id} by ${reporterId} against ${userId}`);
 
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       complaintId: complaint.id,
-      message: "Complaint submitted successfully" 
+      message: "Complaint submitted successfully"
     });
 
   } catch (error: any) {
     console.error("[COMPLAINTS] Error creating complaint:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Failed to submit complaint",
-      message: error.message 
+      message: error.message
     });
   }
 });
@@ -591,7 +593,7 @@ profileRouter.post('/account/delete', authMiddleware, async (req, res): Promise<
     console.log(`[PROFILE] Starting account deletion for user ${userId}`);
 
     // Получаем профиль пользователя
-    const profile = await prisma.profile.findUnique({ 
+    const profile = await prisma.profile.findUnique({
       where: { userId },
       include: { imageData: true }
     });
@@ -609,16 +611,16 @@ profileRouter.post('/account/delete', authMiddleware, async (req, res): Promise<
 
       // 1. Удаляем сообщения
       if (chatIds.length > 0) {
-        await tx.message.deleteMany({ 
-          where: { chatId: { in: chatIds } } 
+        await tx.message.deleteMany({
+          where: { chatId: { in: chatIds } }
         });
         console.log(`[PROFILE] Deleted messages from ${chatIds.length} chats`);
       }
 
       // 2. Удаляем чаты
       if (chatIds.length > 0) {
-        await tx.chat.deleteMany({ 
-          where: { id: { in: chatIds } } 
+        await tx.chat.deleteMany({
+          where: { id: { in: chatIds } }
         });
         console.log(`[PROFILE] Deleted ${chatIds.length} chats`);
       }
@@ -637,10 +639,10 @@ profileRouter.post('/account/delete', authMiddleware, async (req, res): Promise<
       }
 
       // 4. Удаляем матчи
-      await tx.match.deleteMany({ 
-        where: { 
-          OR: [{ user1Id: userId }, { user2Id: userId }] 
-        } 
+      await tx.match.deleteMany({
+        where: {
+          OR: [{ user1Id: userId }, { user2Id: userId }]
+        }
       });
       console.log(`[PROFILE] Deleted matches for user ${userId}`);
 
@@ -698,7 +700,7 @@ profileRouter.post('/account/delete', authMiddleware, async (req, res): Promise<
 
   } catch (err) {
     console.error(`[PROFILE] Account deletion error for user ${userId}:`, err);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to delete account',
       message: err instanceof Error ? err.message : 'Unknown error'
     });

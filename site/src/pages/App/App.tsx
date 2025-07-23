@@ -7,98 +7,98 @@ import { ErrorCard } from "@components/ui";
 import api from "@api";
 
 type StatsResponse = {
-    likesSent: number;
-    dislikesSent: number;
-    sentLikePercent: number | null;
-    likeCoefficient: number | null;
-    matches: number;
-    rejectedLikes: number;
+  likesSent: number;
+  dislikesSent: number;
+  sentLikePercent: number | null;
+  likeCoefficient: number | null;
+  matches: number;
+  rejectedLikes: number;
 };
 
 type Profile = {
-    id: string;
-    preferredName: string;
-    description: string;
-    city: string;
-    goals: string[];
-    birthYear: string;
-    user: { username: string };
-    images?: string[];
+  id: string;
+  preferredName: string;
+  description: string;
+  city: string;
+  goals: string[];
+  birthYear: string;
+  user: { username: string };
+  images?: string[];
 };
 
 export const App: React.FC<{ className?: string }> = ({ className }) => {
-    const { user, isInitialized, isAuthenticated, token } = useUserStore();
+  const { user, isInitialized, isAuthenticated, token } = useUserStore();
 
-    const [stats, setStats] = useState<StatsResponse | null>(null);
-    const [profile, setProfile] = useState<Profile | null>(null);
-    const [isRefreshing, setIsRefreshing] = useState(false);
-    const [, setError] = useState<string | null>(null); // TODO: Сделать отображение ошибки через телеграм сообщение 
+  const [stats, setStats] = useState<StatsResponse | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [, setError] = useState<string | null>(null); // TODO: Сделать отображение ошибки через телеграм сообщение 
 
-    /**
-     * Создание запроса на получение статистики и данных при 1 заходе
-     */
-    useEffect(() => {
-        const loadData = async () => {
-            if (!isInitialized || !isAuthenticated) {
-              return console.log('[App] Авторизация не завершена! Пропускаем загрузку данных');
-            }
+  /**
+   * Создание запроса на получение статистики и данных при 1 заходе
+   */
+  useEffect(() => {
+    const loadData = async () => {
+      if (!isInitialized || !isAuthenticated) {
+        return console.log('[App] Авторизация не завершена! Пропускаем загрузку данных');
+      }
 
-            try {
-                const apiStats = await api.get("/stats/me", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                });
+      try {
+        const apiStats = await api.get("/stats/me", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+        });
 
-                const apiProfile = await api.get("/profile/me", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                });
+        const apiProfile = await api.get("/profile/me", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+        });
 
-                const dataStats = await apiStats.json();
-                const dataProfile = await apiProfile.json();
+        const dataStats = await apiStats.json();
+        const dataProfile = await apiProfile.json();
 
-                setStats(dataStats); setProfile(dataProfile.profile);
-            } catch (error) {
-                console.error(error);
-                setError("[API] Не удалось получить данные профиля! Попробуйте зайти позже");
-            }
-        };
-
-        loadData();
-    }, [isInitialized, isAuthenticated, token]);
-
-    const refreshData = async () => {
-        setIsRefreshing(true);
-
-        if (isAuthenticated && token) {
-            try {
-                const res = await api.get("/me", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                });
-
-                const data = await res.json();
-                useUserStore.getState().setUser(data.user);
-
-                const statsRes: any = await api.get("/stats/me", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                });
-
-                const statData = await statsRes.json();
-                setStats(statData.data);
-            } catch (err) {
-                console.error("Failed to refresh data", err);
-                setError("Ошибка обновления данных");
-            }
-        }
-
-        setTimeout(() => setIsRefreshing(false), 1000);
+        setStats(dataStats); setProfile(dataProfile.profile);
+      } catch (error) {
+        console.error(error);
+        setError("[API] Не удалось получить данные профиля! Попробуйте зайти позже");
+      }
     };
+
+    loadData();
+  }, [isInitialized, isAuthenticated, token]);
+
+  const refreshData = async () => {
+    setIsRefreshing(true);
+
+    if (isAuthenticated && token) {
+      try {
+        const res = await api.get("/me", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+        });
+
+        const data = await res.json();
+        useUserStore.getState().setUser(data.user);
+
+        const statsRes: any = await api.get("/stats/me", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+        });
+
+        const statData = await statsRes.json();
+        setStats(statData.data);
+      } catch (err) {
+        console.error("Failed to refresh data", err);
+        setError("Ошибка обновления данных");
+      }
+    }
+
+    setTimeout(() => setIsRefreshing(false), 1000);
+  };
 
   if (!isInitialized) {
     return (
@@ -148,10 +148,10 @@ export const App: React.FC<{ className?: string }> = ({ className }) => {
           >
             <FiRefreshCw className="text-lg" />
           </button>
-          <div className="neu-card text-center mb-6">
+          <div className="text-center mb-6">
             <div className="neu-gradient-primary p-6 rounded-neu-lg mb-4">
               <h1 className="text-3xl font-bold text-white mb-2">Reflex</h1>
-              <p className="text-white/80 text-sm">Современная платформа знакомств</p>
+              <p className="text-white/80 text-sm">Современная платформа для знакомств</p>
             </div>
           </div>
         </div>
@@ -202,7 +202,7 @@ export const App: React.FC<{ className?: string }> = ({ className }) => {
             <div className="px-4 pb-4">
               <div className="flex items-start justify-between mb-2 gap-2">
                 <h2 className="text-xl font-semibold neu-text-primary">
-                  {profile.preferredName}, {new Date().getFullYear() - parseInt(profile.birthYear,10)}
+                  {profile.preferredName}, {new Date().getFullYear() - parseInt(profile.birthYear, 10)}
                 </h2>
                 <div className="neu-surface-subtle px-2 py-1 rounded-neu-sm flex items-center space-x-1 flex-shrink-0">
                   <FiMapPin className="text-neu-accent-primary text-sm" />
@@ -222,7 +222,7 @@ export const App: React.FC<{ className?: string }> = ({ className }) => {
             </div>
           </div>
         )}
-        
+
         {/* Footer */}
         <div className="text-center mt-8 py-4">
           <p className="text-xs neu-text-muted">
@@ -233,3 +233,5 @@ export const App: React.FC<{ className?: string }> = ({ className }) => {
     </div>
   );
 };
+
+export default App

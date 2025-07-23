@@ -19,16 +19,13 @@ import { ReadIcon } from '@components/ui/ReadIcon';
 import { Message } from './types';
 import api from '@api';
 
-// Удалили хвостики у bubble, поэтому дополнительные стили не требуются
-const bubbleStyles = ``;
-
 interface ChatDetailProps {
   chatId: string;
   messages: Message[];
   currentUserId: string | null;
   markRead: (chatId: string, ids: string[]) => Promise<void>;
   onSendMessage: (chatId: string, text: string) => Promise<void>;
-  onEditMessage: (messageId: string, text: string) => Promise<void>;
+  onEditMessage: (chatId: string, messageId: string, text: string) => Promise<void>;
   onDeleteMessage: (messageId: string, scope: 'self' | 'both') => Promise<void>;
   onLoadMore: () => void;
   hasMore: boolean;
@@ -43,6 +40,7 @@ interface ChatDetailProps {
 
 const MessageItem: React.FC<{
   message: Message;
+  chatId: string;
   onEdit: (id: string, t: string) => void;
   onDelete: (id: string) => void;
   selected: Set<string>;
@@ -192,7 +190,6 @@ const MessageItem: React.FC<{
 export const ChatDetail: React.FC<ChatDetailProps> = ({
   chatId,
   messages,
-
   markRead,
   onSendMessage,
   onEditMessage,
@@ -289,7 +286,7 @@ export const ChatDetail: React.FC<ChatDetailProps> = ({
 
   const handleEdit = async (messageId: string, text: string) => {
     try {
-      await onEditMessage(messageId, text);
+      await onEditMessage(chatId, messageId, text);
     } catch (error) {
       console.error('Ошибка редактирования:', error);
     }
@@ -331,7 +328,7 @@ export const ChatDetail: React.FC<ChatDetailProps> = ({
     if(!msg) return;
     // simple prompt edit
     const newText=prompt('Изменить сообщение',msg.text||'');
-    if(newText!==null && newText.trim()) onEditMessage(id,newText.trim());
+    if(newText!==null && newText.trim()) onEditMessage(chatId,id,newText.trim());
     clearSelection();
   };
 
@@ -424,9 +421,6 @@ export const ChatDetail: React.FC<ChatDetailProps> = ({
 
   return (
     <>
-      {/* Временно оставляем возможность подмены стилей через bubbleStyles */}
-      {bubbleStyles && <style dangerouslySetInnerHTML={{ __html: bubbleStyles }} />}
-      
       <div className="flex flex-col h-full">
         {/* Закрепленный хедер */}
         <div className="sticky top-0 z-20 bg-neu-bg-primary border-b border-neu-border flex items-center px-4 py-3 shadow-sm">
@@ -523,6 +517,7 @@ export const ChatDetail: React.FC<ChatDetailProps> = ({
                   <MessageItem
                     key={message.id}
                     message={message}
+                    chatId={chatId}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     selected={selected}

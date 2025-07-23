@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FiArrowLeft, FiFileText, FiShield, FiAlertTriangle } from "react-icons/fi";
 import { PageTransition } from "../../components/ui/PageTransition";
-import styles from "./Legal.module.scss";
+import styles from "./scss/Legal.module.scss";
 
 export const TermsOfService: React.FC = () => {
   const navigate = useNavigate();

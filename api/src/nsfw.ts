@@ -2,7 +2,7 @@ import { Router } from "express";
 import { authMiddleware } from "./middleware/auth.ts";
 import { prisma } from "./prisma.ts";
 // Импортируем TensorFlow и nsfwjs
-import tf from '@tensorflow/tfjs-node';
+import tf from './tensorflow-config';
 import nsfwjs from 'nsfwjs';
 import axios from 'axios';
 import sharp from 'sharp';
@@ -59,10 +59,10 @@ const checkImageNsfw = async (imageBuffer: Buffer): Promise<{
 
     // Декодируем изображение для TensorFlow
     const decoded = tf.node.decodeImage(image, 3);
-    
+
     // Получаем предсказания
     const predictions = await nsfwModel.classify(decoded);
-    
+
     // Освобождаем память
     decoded.dispose();
 
@@ -106,11 +106,11 @@ nsfwRouter.post("/nsfw/check-url", authMiddleware, async (req, res): Promise<voi
     }
 
     // Загружаем изображение
-    const response = await axios.get(imageUrl, { 
+    const response = await axios.get(imageUrl, {
       responseType: 'arraybuffer',
       timeout: 30000 // 30 секунд таймаут
     });
-    
+
     const imageBuffer = Buffer.from(response.data);
 
     // Проверяем на NSFW
@@ -128,9 +128,9 @@ nsfwRouter.post("/nsfw/check-url", authMiddleware, async (req, res): Promise<voi
 
   } catch (error: any) {
     console.error("[NSFW] Check URL error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Failed to check image",
-      message: error.message 
+      message: error.message
     });
   }
 });
@@ -139,21 +139,21 @@ nsfwRouter.post("/nsfw/check-url", authMiddleware, async (req, res): Promise<voi
 nsfwRouter.post("/nsfw/upload-and-check", authMiddleware, async (req, res): Promise<void> => {
   try {
     const userId = (req as any).userId;
-    
+
     // Здесь должна быть логика получения файла из request
     // Например через multer или другую библиотеку
     // const imageBuffer = req.file?.buffer;
-    
-    res.status(501).json({ 
+
+    res.status(501).json({
       error: "Upload endpoint not implemented yet",
-      message: "Use /profile/add-media endpoint with NSFW check integrated" 
+      message: "Use /profile/add-media endpoint with NSFW check integrated"
     });
 
   } catch (error: any) {
     console.error("[NSFW] Upload error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Failed to upload and check image",
-      message: error.message 
+      message: error.message
     });
   }
 });
@@ -162,7 +162,7 @@ nsfwRouter.post("/nsfw/upload-and-check", authMiddleware, async (req, res): Prom
 nsfwRouter.post("/nsfw/batch-check", authMiddleware, async (req, res): Promise<void> => {
   try {
     const userId = (req as any).userId;
-    
+
     // Получаем профиль пользователя
     const profile = await prisma.profile.findUnique({
       where: { userId }
@@ -174,29 +174,29 @@ nsfwRouter.post("/nsfw/batch-check", authMiddleware, async (req, res): Promise<v
     }
 
     const results = [];
-    
+
     // Временно проверяем изображения из старого массива
     for (let i = 0; i < profile.images.length; i++) {
       const imageUrl = profile.images[i];
       try {
         // Загружаем изображение
-        const response = await axios.get(imageUrl, { 
+        const response = await axios.get(imageUrl, {
           responseType: 'arraybuffer',
           timeout: 30000
         });
-        
+
         const imageBuffer = Buffer.from(response.data);
-        
+
         // Проверяем на NSFW
         const nsfwResult = await checkImageNsfw(imageBuffer);
-        
+
         results.push({
           index: i,
           url: imageUrl,
           isNsfw: nsfwResult.isNsfw,
           score: nsfwResult.score
         });
-        
+
       } catch (error) {
         console.error(`[NSFW] Ошибка проверки изображения ${i}:`, error);
         results.push({
@@ -214,9 +214,9 @@ nsfwRouter.post("/nsfw/batch-check", authMiddleware, async (req, res): Promise<v
 
   } catch (error: any) {
     console.error("[NSFW] Batch check error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Failed to batch check images",
-      message: error.message 
+      message: error.message
     });
   }
 });
@@ -225,7 +225,7 @@ nsfwRouter.post("/nsfw/batch-check", authMiddleware, async (req, res): Promise<v
 nsfwRouter.get("/nsfw/stats", authMiddleware, async (req, res): Promise<void> => {
   try {
     const userId = (req as any).userId;
-    
+
     const profile = await prisma.profile.findUnique({
       where: { userId },
       include: {
@@ -260,9 +260,9 @@ nsfwRouter.get("/nsfw/stats", authMiddleware, async (req, res): Promise<void> =>
 
   } catch (error: any) {
     console.error("[NSFW] Stats error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Failed to get NSFW stats",
-      message: error.message 
+      message: error.message
     });
   }
 });

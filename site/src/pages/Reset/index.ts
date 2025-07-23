@@ -1,1 +1,1 @@
-export { default as Reset } from './Reset.tsx';
+export { default as Reset } from './Reset.jsx';

@@ -482,7 +482,7 @@ export const Search: React.FC = () => {
                         }`}
                       >
                         <img
-                          src={img}
+                          src={img.replace('/api', '')}
                           alt={`Фотография ${profile.preferredName}`}
                           className={`w-full h-full cursor-pointer ${
                             hasRealImages ? 'object-cover' : 'object-contain bg-gradient-to-br from-neu-accent-primary/20 to-neu-accent-secondary/20'

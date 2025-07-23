@@ -1,1 +1,1 @@
-export { default as Likes } from './Likes.tsx';
+export { default as Likes } from './Likes.jsx';

@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
-import { CityMigration } from "@page/CityMigration/CityMigration";
 import { ErrorCard, AdCard, BannedScreen } from "@components/ui";
 import { useGlobalWebSocket } from "@hooks/useGlobalWebSocket";
 import { useAdvertising } from "@hooks/useAdvertising";
@@ -24,13 +23,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   const [loading, setLoading] = useState(!isInitialized);
   const [error, setError] = useState<string | null>(null);
-  const [needsCityMigration, setNeedsCityMigration] = useState(false);
 
   const [authRetryCount, setAuthRetryCount] = useState(0);
-  
+
   // Инициализируем глобальный WebSocket
   useGlobalWebSocket();
-  
+
   // Инициализируем рекламу
   const {
     currentAd,
@@ -39,7 +37,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     trackClick,
     closeAd
   } = useAdvertising();
-  
+
   // Используем состояние из store
   const noProfile = hasProfile === false;
 
@@ -91,19 +89,19 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           const userData = await response.json();
           setUser(userData.user);
           setToken(storedToken);
-          
+
           // Проверяем есть ли профиль
           const profileResponse = await api.get("/profile/me", {
             headers: {
               Authorization: `Bearer ${storedToken}`
             },
           });
-          
+
           console.log('[Init] Проверка профиля:', {
             status: profileResponse.status,
             ok: profileResponse.ok
           });
-          
+
           if (profileResponse.ok) {
             const profileData = await profileResponse.json();
             console.log('[Init] Профиль получен:', {
@@ -144,7 +142,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       const timer = setTimeout(() => {
         showWelcomeAd();
       }, 3000);
-      
+
       return () => clearTimeout(timer);
     }
   }, [isInitialized, user, hasProfile]);
@@ -183,7 +181,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       setHasProfile(true);
     } catch (err: any) {
       console.log('[VerifyProfile] ❌ Ошибка:', err.response?.status);
-      
+
       if (err.response?.status === 404) {
         if (!retry) {
           console.log('[VerifyProfile] 🔄 Первая 404, повторяем через 800мс...');
@@ -226,7 +224,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
     const tgWebApp = (window as any).Telegram?.WebApp;
     const raw = tgWebApp?.initData;
-    
+
     console.log('[Auth] WebApp состояние:', {
       webAppExists: !!tgWebApp,
       initDataExists: !!raw,
@@ -239,7 +237,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         console.log(`[Auth] InitData не найден, повтор через ${(retryCount + 1) * 1000}мс...`);
         return authWithTelegram(retryCount + 1);
       }
-      
+
       console.warn("[Auth] ❌ InitData не найден после всех попыток");
       setError("tg-init-missing");
       setLoading(false);
@@ -249,7 +247,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
     try {
       console.log('[Auth] 🚀 Отправляем запрос авторизации...');
-      const response = await axios.post(`${config.API_URL}/auth/by-initdata`, 
+      const response = await axios.post(`${config.API_URL}/auth/by-initdata`,
         { initData: raw },
         { timeout: 10000 } // 10 секунд таймаут
       );
@@ -262,16 +260,16 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       console.log('[Auth] 🔍 Проверяем профиль пользователя...');
       // Проверяем есть ли профиль - ИСПРАВЛЕНИЕ: используем новый токен
       verifyProfile(response.data.token);
-      
+
     } catch (err: any) {
       console.error(`[Auth] ❌ Ошибка на попытке ${retryCount + 1}:`, err);
-      
+
       // Если это сетевая ошибка или таймаут - пробуем еще раз
       if ((err.code === 'NETWORK_ERROR' || err.code === 'ECONNABORTED' || !err.response) && retryCount < maxRetries) {
         console.log(`[Auth] 🔄 Сетевая ошибка, повтор через ${(retryCount + 1) * 1000}мс...`);
         return authWithTelegram(retryCount + 1);
       }
-      
+
       // Обрабатываем специфические ошибки
       if (err.response?.status === 409 && err.response?.data?.code === "CLEAR_STORAGE") {
         localStorage.clear();
@@ -287,7 +285,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       } else {
         setError("Ошибка авторизации");
       }
-      
+
       setLoading(false);
     } finally {
       // ИСПРАВЛЕНИЕ: Всегда устанавливаем isInitialized=true в конце
@@ -375,9 +373,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   // Проверяем статус блокировки пользователя
   if (user.blocked) {
     return (
-      <BannedScreen 
-        blockReason={user.blockReason} 
-        blockedAt={user.blockedAt} 
+      <BannedScreen
+        blockReason={user.blockReason}
+        blockedAt={user.blockedAt}
       />
     );
   }
@@ -386,14 +384,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     return <>{children || <Outlet />}</>;
   }
 
-  if (needsCityMigration) {
-    return <CityMigration />;
-  }
-
   return useBottomLayout ? (
     <BottomLayout>
       {children || <Outlet />}
-      
+
       {/* Модальное окно с рекламой */}
       {currentAd && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -416,7 +410,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   ) : (
     <>
       {children || <Outlet />}
-      
+
       {/* Модальное окно с рекламой */}
       {currentAd && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">

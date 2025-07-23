@@ -4,6 +4,9 @@ import expressWs from "express-ws";
 import dotenv from "dotenv";
 import cors from "cors";
 
+// Отключаем логи TensorFlow.js
+import './tensorflow-config';
+
 import { authRouter } from "./auth.ts";
 import userRouter from "./user.ts";
 import { profileRouter } from "./profile.ts";
@@ -64,9 +67,9 @@ const PORT = process.env.PORT || 3001;
 // Убираем избыточное логирование в production
 if (process.env.NODE_ENV === 'production') {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  console.log = () => {};
+  console.log = () => { };
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  console.debug = () => {};
+  console.debug = () => { };
 }
 
 wsApp.listen(PORT, async () => {
@@ -74,7 +77,7 @@ wsApp.listen(PORT, async () => {
   console.log(`[WS] 🔍 Search WS: ws://localhost:${PORT}/ws/search`);
   console.log(`[WS] 💘 Likes  WS: ws://localhost:${PORT}/ws/likes`);
   console.log(`[WS] 💬 Chat   WS: ws://localhost:${PORT}/ws/chat`);
-  
+
   // Инициализируем NSFW модель
   await initializeNsfwModel();
 });

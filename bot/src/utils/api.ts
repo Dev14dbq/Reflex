@@ -6,7 +6,10 @@ import { API_BASE, BOT_TOKEN } from "../config.js";
 export async function fetchProfile(tgId: number): Promise<Profile | null> {
     try {
         const { data } = await axios.get(`${API_BASE}/profile/by-telegram/${tgId.toString()}`, {
-            timeout: 5000
+            timeout: 5000,
+            headers: {
+                Authorization: "Bearer " + BOT_TOKEN
+            }
         });
 
         return data.exists ? data.profile : null;
@@ -18,10 +21,6 @@ export async function fetchProfile(tgId: number): Promise<Profile | null> {
 
 export async function uploadPhoto(telegramId: number, imageId: string): Promise<{ ok: boolean, fileUrl: string }> {
     try {
-        /**
-         * Получаем путь до нужного нам файла используя айди фото
-         */
-
         const fileInfoResp = await axios.get(
             `https://api.telegram.org/bot${BOT_TOKEN}/getFile?file_id=${imageId}`
         );
@@ -30,7 +29,10 @@ export async function uploadPhoto(telegramId: number, imageId: string): Promise<
 
         const { status } = await axios.post(`${API_BASE}/profile/add-media`, {
             telegramId,
-            imageUrl
+            imageUrl,
+            headers: {
+                Authorization: "Bearer " + BOT_TOKEN
+            }
         });
 
         return {
@@ -52,7 +54,10 @@ export async function getAdvertisement(userId: number): Promise<Advertisement | 
             params: {
                 userId
             },
-            timeout: 5000
+            timeout: 5000,
+            headers: {
+                Authorization: "Bearer " + BOT_TOKEN
+            }
         });
 
         return data.ad || null;
@@ -64,7 +69,10 @@ export async function getAdvertisement(userId: number): Promise<Advertisement | 
 export async function getAdvertisementData(campaign_id: string): Promise<Advertisement | null> {
     try {
         const { data } = await axios.get(`${API_BASE}/advertising/campaign/${campaign_id}/ad`, {
-            timeout: 5000
+            timeout: 5000,
+            headers: {
+                Authorization: "Bearer " + BOT_TOKEN
+            }
         });
 
         return data.ad || null;
@@ -78,7 +86,10 @@ export async function trackAdImpression(campaignId: string, userId: number) {
     try {
         await axios.post(`${API_BASE}/advertising/track/impression`, {
             campaignId,
-            userId
+            userId,
+            headers: {
+                Authorization: "Bearer " + BOT_TOKEN
+            }
         });
     } catch (error) {
         console.error('[API] Ошибка при использовании функции uploadPhoto:', error.responce || error);
@@ -90,7 +101,10 @@ export async function trackAdClick(campaignId: string, userId: number) {
     try {
         await axios.post(`${API_BASE}/advertising/track/click`, {
             campaignId,
-            userId
+            userId,
+            headers: {
+                Authorization: "Bearer " + BOT_TOKEN
+            }
         });
     } catch (error) {
         console.error('[API] Ошибка при использовании функции uploadPhoto:', error.responce || error);

@@ -12,7 +12,6 @@ export function startCommand(bot: Telegraf) {
 
         const replyKb = Markup.keyboard([
             ["📸 Загрузить фото"],
-            ["📞 Поддержка"],
         ]).resize();
 
         const inlineKb = Markup.inlineKeyboard([
@@ -21,7 +20,8 @@ export function startCommand(bot: Telegraf) {
 
         const caption = `<b>Reflex — анонимный LGB🌈Q чат-тиндер</b>\n\n${hasProfile
             ? "Нажмите «Запустить», чтобы открыть приложение.\n📸 Загрузить фото — управлять фотографиями (1-5)"
-            : "Нажмите «Запустить», пройдите короткую регистрацию и начинайте знакомиться!"}\n📞 Поддержка — вопросы → @${SUPPORT_USERNAME}`;
+            : "Нажмите «Запустить», пройдите короткую регистрацию и начинайте знакомиться!"
+            }\n📞 Поддержка — вопросы → @${SUPPORT_USERNAME}`;
 
         await ctx.replyWithPhoto(INTRO_PICTURE, { caption, parse_mode: "HTML", ...inlineKb });
         await ctx.reply("Меню", replyKb);

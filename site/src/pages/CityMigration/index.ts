@@ -1,1 +1,1 @@
-export { default as CityMigration } from './CityMigration.tsx';
+export { default as CityMigration } from './CityMigration.jsx';

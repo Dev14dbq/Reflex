@@ -1,4 +1,4 @@
-import { config } from '../config/env.ts';
+import { config } from '../config/env.js';
 
 class ApiService {
   private baseUrl: string;
@@ -27,7 +27,7 @@ class ApiService {
    */
   public async request(endpoint: string, options: RequestInit = {}): Promise<Response> {
     const url = this.getUrl(endpoint);
-    
+
     const defaultHeaders: HeadersInit = {
       'Content-Type': 'application/json',
     };
@@ -48,7 +48,8 @@ class ApiService {
       },
     };
 
-    return await fetch(url, config);
+    const result = await fetch(url, config);
+    return result;
   }
 
   /**

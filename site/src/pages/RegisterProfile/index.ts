@@ -1,1 +1,1 @@
-export { default as RegisterProfile } from './Register.tsx';
+export { default as RegisterProfile } from './Register.jsx';

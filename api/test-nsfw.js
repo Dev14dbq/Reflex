@@ -2,8 +2,8 @@ import axios from 'axios';
 import dotenv from "dotenv"; dotenv.config();
 
 // Замените на ваш реальный JWT токен
-const JWT_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWNwenRqeHkwMDAwdWswY3RmZmR2NTk1IiwiaWF0IjoxNzUxOTY5NzYwLCJleHAiOjE3NTQ1NjE3NjB9.F1VmeCKaHf53aRWmOdwe8_B-oFZdezumhdJ4iwDnGkU';
-
+const JWT_TOKEN = process.env.JWT_TOKEN;
+console.log(JWT_TOKEN)
 // URL вашего API
 const API_URL = process.env.API_URL || 'https://spectrmod.ru/api';
 
@@ -13,7 +13,7 @@ const TEST_IMAGE_URL = 'https://lf16-tiktok-common.tiktokcdn-us.com/obj/tiktok-w
 async function testNsfwApi() {
   try {
     console.log('🔍 Тестируем NSFW API...\n');
-    
+
     // Тест 1: Проверка изображения по URL
     console.log('📸 Тест 1: Проверка изображения по URL');
     const response = await axios.post(
@@ -26,9 +26,9 @@ async function testNsfwApi() {
         }
       }
     );
-    
+
     console.log('✅ Результат:', JSON.stringify(response.data, null, 2));
-    
+
   } catch (error) {
     if (error.response) {
       console.error('❌ Ошибка API:', error.response.status, error.response.data);

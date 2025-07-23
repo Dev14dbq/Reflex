@@ -1,2 +1,2 @@
-export { default as MyProfile } from './MyProfile.tsx';
-export { default as ProfileView } from './Profile.tsx';
+export { default as MyProfile } from './MyProfile.jsx';
+export { default as ProfileView } from './Profile.jsx';

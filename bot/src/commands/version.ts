@@ -13,9 +13,9 @@ try {
 export function versionCommand(bot: Telegraf) {
     bot.command("version", async (ctx: Context) => {
         if (buildTime) {
-            await ctx.reply(`Версия бота: ${packageVersion}-JavaScript-${buildTime}`);
+            await ctx.reply(`Версия бота: ${packageVersion}\nЯзык бота: JavaScript\nВремя сборки: ${buildTime}`);
         } else {
-            await ctx.reply(`Версия бота: ${packageVersion}-TypeScript-None`);
+            await ctx.reply(`Версия бота: ${packageVersion}\nЯзык бота: TypeScript`);
         }
     });
 } 

@@ -19,6 +19,10 @@ export default defineConfig({
     },
   },
   server: {
-    allowedHosts: ["reflex-site.kamish.pro"]
-  },
+    port: 5000,
+    allowedHosts: [
+      "spectrmod.ru",
+      "dev.spectrmod.ru",
+    ]
+  }
 })

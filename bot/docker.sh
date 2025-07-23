@@ -121,8 +121,10 @@ create_recreate_container() {
 
     # Проверяем, существует ли контейнер с таким именем
     if docker ps -a --format '{{.Names}}' | grep -wq "$container_name"; then
-        echo "⚠️ Контейнер с именем \"$container_name\" уже существует."
+        echo ""
+        echo "⚠️  Контейнер с именем \"$container_name\" уже существует."
         read -p "Хотите удалить существующий контейнер и создать новый? (y/n): " remove_choice
+        
         if [[ "$remove_choice" =~ ^[Yy]$ ]]; then
             docker rm -f "$container_name"
             if [ $? -eq 0 ]; then
@@ -139,9 +141,9 @@ create_recreate_container() {
 
     # Создаём контейнер
     if [ "$host_port" != "0" ] && [ "$container_port" != "0" ]; then
-        docker run -d --name "$container_name" -p "$host_port":"$container_port" "$image_name"
+        docker run -d --restart=always --name "$container_name" -p "$host_port":"$container_port" "$image_name"
     else
-        docker run -d --name "$container_name" "$image_name"
+        docker run -d --restart=always --name "$container_name" "$image_name"
     fi
 
     if [ $? -eq 0 ]; then
